@@ -35,4 +35,4 @@ us.names.df <- do.call(rbind, lapply(yr.name.files, readWrap))
 ## Cleanup
 
 unlink(c(names.tmpdir, temp))
-rm(temp, name.yr.files, names.tmpdir)
+rm(temp, yr.name.files, names.tmpdir)
