@@ -16,7 +16,7 @@ download.file('http://www.ssa.gov/oact/babynames/names.zip', temp)
 unzip(temp, exdir = names.tmpdir)
 
 # get vector of path names
-name.yr.files <- list.files(path = names.tmpdir, pattern = "[^.]*\\.txt", full.names = TRUE)
+yr.name.files <- list.files(path = names.tmpdir, pattern = "[^.]*\\.txt", full.names = TRUE)
 
 # Read a csv from a file, adding the year from the file to 
 # a new column
@@ -30,7 +30,7 @@ readWrap <- function(filepath) {
 }
 
 # Combine all years into a single dataframe
-names.merged <- do.call(rbind, lapply(name.yr.files, readWrap))
+us.names.df <- do.call(rbind, lapply(yr.name.files, readWrap))
 
 ## Cleanup
 
