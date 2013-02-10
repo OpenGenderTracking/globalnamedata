@@ -11,6 +11,7 @@ names.tmpdir <- tempdir()
 temp <- tempfile()
 
 # download and unzip
+# See http://www.ssa.gov/oact/babynames/limits.html for info 
 download.file('http://www.ssa.gov/oact/babynames/names.zip', temp)
 unzip(temp, exdir = names.tmpdir)
 
