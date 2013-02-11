@@ -1,4 +1,3 @@
-
 library(plyr)
 library(reshape2)
 
@@ -62,8 +61,8 @@ nateMod <- function(x) {
   # hahahaha That's awesome. This is
   # actually handy http://rmazing.wordpress.com/2013/01/30/the-magic-empty-bracket/
   out[] <- 1
-  # unless I'm reading it wrong, there's a 
-  # bug in the ruby script. Should be 1 + ...
+  # unless I'm reading it wrong, there's a bug in the ruby script. 
+  # Should be 1 + ... 
   # 1 - ... weights old/new years more than 1960-1980
   out[x > 1980] <- 1 + (1960 - x[x > 1980])/100
   out[x < 1960] <- 1 + (x[x < 1960] - 1980)/100
