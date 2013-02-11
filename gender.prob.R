@@ -87,7 +87,7 @@ us.names.df[, "PropM"] <- 1 - us.names.df[, "PropF"]
 us.final.df <- ddply(us.names.df, 
                         "Name", function(x) {
                           data.frame(ModProportionF = sum(x[, "PropF"] * x[, "YearModifier"]),
-                            				 ModProportionM = sum(x[, "PropM"] * x[, "YearModifier"]))
+                                     ModProportionM = sum(x[, "PropM"] * x[, "YearModifier"]))
                         })
 
 # Counts appearances by years (used to normalize the result)
@@ -109,6 +109,4 @@ us.final.df <- us.final.df[, c("Name", "freq",
                                "AnyMale", "ImputedProbM")]
 
 names(us.final.df)[2] <- "YearsAppearing"
-
-
 
