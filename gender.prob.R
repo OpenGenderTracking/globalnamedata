@@ -24,8 +24,6 @@ matchSexes <- function(x) {
   x.melt <- melt(x, id.vars = c("Name", "Sex"), measure.vars = "Count")
   x.out <- dcast(x.melt, Name ~ Sex, sum)
   x.out[, "Name"] <- as.character(x.out[, "Name"])
-  # Totals may be useful eventually
-  x.out[, "Total"] <- sum(x[, "Count"])
   # Faster/safer than unique(x[, "Year"])
   # no easy way to extract from the passed argument
   x.out[, "Year"] <- x[, "Year"][1]
@@ -39,13 +37,13 @@ us.names.df <- ddply(us.names.df, "Year", function(x) matchSexes(x))
 
 # structure will look like this:
 
-#     Name  F   M Year  Total
-# 1  Aaron  0 102 1880 201486
-# 2     Ab  0   5 1880 201486
-# 3  Abbie 71   0 1880 201486
-# 4 Abbott  0   5 1880 201486
-# 5   Abby  6   0 1880 201486
-# 6    Abe  0  50 1880 201486
+#     Name  F   M Year
+# 1  Aaron  0 102 1880
+# 2     Ab  0   5 1880
+# 3  Abbie 71   0 1880
+# 4 Abbott  0   5 1880
+# 5   Abby  6   0 1880
+# 6    Abe  0  50 1880
 
 # Each name is now associated w/ a *single* row
 # so we only need to look up one "key" as it were
@@ -77,8 +75,9 @@ nateMod <- function(x, penalty = 100) {
 us.names.df[, "YearModifier"] <- nateMod(us.names.df[, "Year"])
 
 # Compute the bare proportion of female names
+# ddply not necessary, since we're not changing the mapping
 
-us.names.df <- ddply(us.names.df, "Year", transform, PropF = F/(F + M))
+us.names.df[, "PropF"] <- with(us.names.df, F/(F + M))
 
 # Male is just 1 - PropF
 
