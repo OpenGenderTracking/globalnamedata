@@ -4,6 +4,10 @@
 #
 #####
 
+# libraries required for the last step. 
+library(plyr)
+library(reshape2)
+
 ## Setup temp files
 # Not strictly necessary, but we don't need to retain the zip
 
@@ -30,9 +34,32 @@ readWrap <- function(filepath) {
 }
 
 # Combine all years into a single dataframe
+
 us.names.df <- do.call(rbind, lapply(yr.name.files, readWrap))
 
-## Cleanup
+# Condense names to single row
+
+matchSexes <- function(x) {
+  # melt and cast are two broad data handling patterns
+  # think of them as the two steps in constructing a
+  # pivot table
+  x.melt <- melt(x, id.vars = c("Name", "Sex"), measure.vars = "Count")
+  x.out <- dcast(x.melt, Name ~ Sex, sum)
+  x.out[, "Name"] <- as.character(x.out[, "Name"])
+  # Faster/safer than unique(x[, "Year"])
+  # no easy way to extract from the passed argument
+  x.out[, "Year"] <- x[, "Year"][1]
+  return(x.out)
+}
+
+# this will take a while. You're looping over 100+ years 
+# comprising ~2 million rows
+
+us.names.df <- ddply(us.names.df, "Year", function(x) matchSexes(x))
+
+
+## Cleanup from import
+# not required but still
 
 unlink(c(names.tmpdir, temp))
-rm(temp, yr.name.files, names.tmpdir)
+rm(temp, yr.name.files, names.tmpdir, readWrap)

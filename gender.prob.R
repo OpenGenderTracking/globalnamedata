@@ -1,39 +1,13 @@
+######
+#
+# Compute incidence and ambiguity of gender in names
+#
+######
+
+# plyr is pretty central to this
 
 library(plyr)
-library(reshape2)
 
-# Some table black magic
-# do.call (with list() passed to args) lets us IIFE this
-# table is a (fast) contingency table builder
-# but we need to map it quickly to the Names column
-
-# we don't need it because we get there w/ cast/melt
-# but it's cool nonetheless
-
-# us.names.df[, "Both"] <- do.call(function() {
-#                                   x <- table(us.names.df[, c("Name", "Sex")])
-#                                   both <- row.names(x)[x[, 1] & x[, 2]]
-#                                   us.names.df[, "Name"] %in% both
-#                                 }, list())
-
-
-matchSexes <- function(x) {
-  # melt and cast are two broad data handling patterns
-  # think of them as the two steps in constructing a
-  # pivot table
-  x.melt <- melt(x, id.vars = c("Name", "Sex"), measure.vars = "Count")
-  x.out <- dcast(x.melt, Name ~ Sex, sum)
-  x.out[, "Name"] <- as.character(x.out[, "Name"])
-  # Faster/safer than unique(x[, "Year"])
-  # no easy way to extract from the passed argument
-  x.out[, "Year"] <- x[, "Year"][1]
-  return(x.out)
-}
-
-# this will take a while. You're looping over 100+ years 
-# comprising ~2 million rows
-
-us.names.df <- ddply(us.names.df, "Year", function(x) matchSexes(x))
 
 # structure will look like this:
 
@@ -126,5 +100,3 @@ names(us.final.df)[2] <- "YearsAppearing"
 # 4 Aabriella              1      TRUE            1   FALSE            0
 # 5     Aadam             20     FALSE            0    TRUE            1
 # 6     Aadan              6     FALSE            0    TRUE            1
-
-
