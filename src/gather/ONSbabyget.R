@@ -1,3 +1,5 @@
+library(XML)
+
 # UK
 
 xpathSApply("http://www.ons.gov.uk/ons/rel/vsob1/baby-names--england-and-wales/index.html", "//div[@class = 'previous-releases-results']//a", xmlAttrs)

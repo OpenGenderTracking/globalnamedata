@@ -1,6 +1,6 @@
 #####
 #
-# Download Baby Names and flatten into single data file
+# Download Baby Names from SSA and flatten into single data file
 #
 #####
 
@@ -20,7 +20,11 @@ download.file('http://www.ssa.gov/oact/babynames/names.zip', temp)
 unzip(temp, exdir = names.tmpdir)
 
 # get vector of path names
-yr.name.files <- list.files(path = names.tmpdir, pattern = "[^.]*\\.txt", full.names = TRUE)
+# sanity check list if working in an RStudio project
+yr.name.files <- list.files(path = names.tmpdir, 
+                            pattern = "yob[0-9]{4}\\.txt", 
+                            full.names = TRUE)
+
 
 # Read a csv from a file, adding the year from the file to 
 # a new column
