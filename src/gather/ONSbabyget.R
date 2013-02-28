@@ -1,5 +1,7 @@
 library(XML)
 
+# necessary because ONS keeps records as .xls (multi-sheet)
+library(gdata)
 # UK
 
 ons.base.url <- "http://www.ons.gov.uk"
@@ -24,14 +26,26 @@ tableGet <- function(url) {
   excel.out <- xpathSApply(htmlParse(paste0(ons.base.url, tables)),
                            "//div[@class = 'download-options']//a[@class  = 'xls']",
                            xmlAttrs)
-  return(excel.out)
+  # the class and the href are both attributes
+  return(excel.out[1, ])
 }
 
-year.tables <- sapply(year.pages, tableGet)
-
-# names(year.tables) <- basename(sub("([0-9]{4})/.*", "\\1", names(year.tables)))
+year.tables <- sapply(year.pages, tableGet, USE.NAMES = FALSE)
 
 year.tables <- paste0(ons.base.url, year.tables)
+
+# drop columns which are auto-named
+
+wrapXLS <- function(url, sheet = 7) {
+  # wrap read.xls with a separate download call
+  temp <- tempfile()
+  download.file(url, temp)
+  xls.df <- read.xls(temp, sheet = sheet, stringsAsFactors = FALSE, skip = 2)
+  unlink(temp)
+  # drop columns with no content
+  xls.df <- xls.df[, names(xls.df)[!grepl("X(\\.?[0-9]*)?", names(xls.df))]]
+  return(xls.df)
+}
 
 
 
