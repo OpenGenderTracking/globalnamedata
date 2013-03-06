@@ -7,13 +7,11 @@ library(gdata)
 ons.base.url <- "http://www.ons.gov.uk"
 
 # index page for data 
-paste0(ons.base.url, "/ons/rel/vsob1/baby-names--england-and-wales/index.html")
 
 index.doc <- htmlParse(file.path(ons.base.url, "rel/vsob1/baby-names--england-and-wales/index.html"))
 
 
 # somewhat fragile path to individual data pages
-xpathSApply(index.doc, "//div[@class = 'previous-releases-results']//a", xmlAttrs)
 
 year.pages <- paste0(ons.base.url, xpathSApply(index.doc, "//div[@class = 'previous-releases-results']//a", xmlAttrs))
 
@@ -40,11 +38,9 @@ wrapXLS <- function(url, sheet = 7) {
   # wrap read.xls with a separate download call
   # because read.xls has problems w/ web downloads
   temp <- tempdir()
-  download.file(url, file.path(temp, basename(url)),
-                cacheOK = FALSE, quiet = TRUE)
+  con <- xls2csv(url)
+  xls.df <- read.csv(con, stringsAsFactors = FALSE, skip = 2)
   browser()
-  xls.df <- read.xls(file.path(temp, basename(url)), sheet = sheet, 
-                     stringsAsFactors = FALSE, skip = 2)
   unlink(temp)
   # drop columns with no content
   xls.df <- xls.df[, names(xls.df)[!grepl("X(\\.?[0-9]*)?", names(xls.df))]]
@@ -54,6 +50,11 @@ wrapXLS <- function(url, sheet = 7) {
 
 alluk.df <- do.call(rbind, lapply(year.tables, wrapXLS))
 
+# sheet names!
+
+# TODO use wget for download method 
+
+sheetNames("test2.xls")
 ## Scotland
 
 # http://www.gro-scotland.gov.uk/statistics/theme/vital-events/births/popular-names/archive/2009/detailed-tables.html
