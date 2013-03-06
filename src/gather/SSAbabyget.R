@@ -13,6 +13,7 @@ library(reshape2)
 
 names.tmpdir <- tempdir()
 temp <- tempfile()
+output.file <- file.path(getwd(), "data/SSA.csv")
 
 # download and unzip
 # See http://www.ssa.gov/oact/babynames/limits.html for info 
@@ -42,28 +43,55 @@ readWrap <- function(filepath) {
 us.names.df <- do.call(rbind, lapply(yr.name.files, readWrap))
 
 # Condense names to single row
-
+# x is of the following form:
+#        Name Sex Count Year
+# 1      Mary   F  7065 1880
+# 2      Anna   F  2604 1880
+# 3      Emma   F  2003 1880
+# 4 Elizabeth   F  1939 1880
+# 5    Minnie   F  1746 1880
+# 6  Margaret   F  1578 1880
 matchSexes <- function(x) {
   # melt and cast are two broad data handling patterns
   # think of them as the two steps in constructing a
-  # pivot table
+  # pivot table:
+  #        Name Sex variable value
+  # 1      Mary   F    Count  7065
+  # 2      Anna   F    Count  2604
+  # 3      Emma   F    Count  2003
+  # 4 Elizabeth   F    Count  1939
+  # 5    Minnie   F    Count  1746
+  # 6  Margaret   F    Count  1578
   x.melt <- melt(x, id.vars = c("Name", "Sex"), measure.vars = "Count")
+  
+  ##
+  #     Name  F   M
+  # 1  Aaron  0 102
+  # 2     Ab  0   5
+  # 3  Abbie 71   0
+  # 4 Abbott  0   5
+  # 5   Abby  6   0
+  # 6    Abe  0  50
   x.out <- dcast(x.melt, Name ~ Sex, sum)
+  
   x.out[, "Name"] <- as.character(x.out[, "Name"])
+  
+  # Add a year column. Year is the same for all rows since
+  # names are grouped per file per year.
   # Faster/safer than unique(x[, "Year"])
   # no easy way to extract from the passed argument
   x.out[, "Year"] <- x[, "Year"][1]
+  
   return(x.out)
 }
 
 # this will take a while. You're looping over 100+ years 
 # comprising ~2 million rows
-
 us.names.df <- ddply(us.names.df, "Year", function(x) matchSexes(x))
-
+write.table(us.names.df, output.file, 
+            quote=FALSE, sep=",", row.names = FALSE, col.names = TRUE)
 
 ## Cleanup from import
 # not required but still
-
 unlink(c(names.tmpdir, temp))
 rm(temp, yr.name.files, names.tmpdir, readWrap)
