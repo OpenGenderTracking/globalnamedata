@@ -58,7 +58,7 @@ matchSexes <- function(x) {
   # 5    Minnie   F  1746 1880
   # 6  Margaret   F  1578 1880
   
-  x.out <- dcast(x[, -4], Name ~ Sex, sum, value.var = "Count")
+  x.out <- dcast(x[, c("Name", "Sex", "Count")], Name ~ Sex, sum, value.var = "Count")
   ## x.out structure
   #     Name  F   M
   # 1  Aaron  0 102
