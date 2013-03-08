@@ -4,11 +4,6 @@
 #
 ######
 
-# plyr is pretty central to this
-
-library(plyr)
-
-
 # structure will look like this:
 
 #     Name  F   M Year
@@ -24,79 +19,79 @@ library(plyr)
 
 # Handling years now, so we convert it to numeric 
 
-us.names.df[, "Year"] <- as.numeric(us.names.df[, "Year"])
+probProcess <- function(data) {
 
-# Nate's year logic from https://gist.github.com/natematias/4743564
-# used for consistency
+  data[, "Year"] <- as.numeric(data[, "Year"])
 
-nateMod <- function(x, penalty = 100) {
-  out <- x
-  # hahahaha That's awesome. This is
-  # actually handy http://rmazing.wordpress.com/2013/01/30/the-magic-empty-bracket/
-  out[] <- 1
-  # unless I'm reading it wrong, there's a 
-  # bug in the ruby script. Should be 1 + ...
-  # 1 - ... weights old/new years more than 1960-1980
-  
-  # Post 1980 names shouldn't be penalized b/c we want to
-  # capture m/f dynamics in new 1st gen american names
-  
-  # out[x > 1980] <- 1 + (1960 - x[x > 1980])/penalty
-  out[x < 1960] <- 1 + (x[x < 1960] - 1980)/penalty
-  return(out)
+  # Nate's year logic from https://gist.github.com/natematias/4743564
+  # used for consistency
+
+  nateMod <- function(x, penalty = 100) {
+    out <- x
+    # hahahaha That's awesome. This is
+    # actually handy http://rmazing.wordpress.com/2013/01/30/the-magic-empty-bracket/
+    out[] <- 1
+    # unless I'm reading it wrong, there's a 
+    # bug in the ruby script. Should be 1 + ...
+    # 1 - ... weights old/new years more than 1960-1980
+    
+    # Post 1980 names shouldn't be penalized b/c we want to
+    # capture m/f dynamics in new 1st gen american names
+    
+    # out[x > 1980] <- 1 + (1960 - x[x > 1980])/penalty
+    out[x < 1960] <- 1 + (x[x < 1960] - 1980)/penalty
+    return(out)
+  }
+
+  data[, "YearModifier"] <- nateMod(data[, "Year"])
+
+  # Compute the bare proportion of female names
+  # ddply not necessary, since we're not changing the mapping
+
+  data[, "PropF"] <- with(data, F/(F + M))
+
+  # Male is just 1 - PropF
+
+  data[, "PropM"] <- 1 - data[, "PropF"]
+
+  ## in practical terms very few names in a given year are ambiguous
+  ## roughly 10% are not 1 or 0 and > 40% of those are 0-0.1 or 0.8-1
+  ## There is still some value to retaining this information
+
+  ## Sums up the proportion of female (male) names 
+
+  # populate name column quickly 
+  data.out <- data.frame(Name = sort(unique(data[, "Name"])), stringsAsFactors = FALSE)
+
+  # MUCH faster than ddply or tapply
+  data.out[, "SumPropF"] <- with(data, rowsum(PropF*YearModifier, Name))
+  data.out[, "SumPropM"] <- with(data, rowsum(PropM*YearModifier, Name))
+
+  # Counts appearances by years (used to normalize the result)
+  data.out <- merge(data.out, count(data, "Name"), by = "Name")
+   
+  # This is a bit of spaghetti code, but it's our normalization  
+  data.out[, "ImputedProbF"] <- data.out[, "SumPropF"] / data.out[, "freq"]
+  data.out[, "ImputedProbM"] <- data.out[, "SumPropM"] / data.out[, "freq"]
+
+  # cleanup the final df
+  data.out <- data.out[, c("Name", "freq", 
+                           "ImputedProbF",
+                           "ImputedProbM")]
+
+  names(data.out)[2] <- "YearsAppearing"
+
+  # Output structure looks like:
+
+  #        Name YearsAppearing AnyFemale ImputedProbF AnyMale ImputedProbM
+  # 1     Aaban              4     FALSE            0    TRUE            1
+  # 2     Aabha              1      TRUE            1   FALSE            0
+  # 3     Aabid              1     FALSE            0    TRUE            1
+  # 4 Aabriella              1      TRUE            1   FALSE            0
+  # 5     Aadam             20     FALSE            0    TRUE            1
+  # 6     Aadan              6     FALSE            0    TRUE            1
+  return(data.out)
 }
 
-us.names.df[, "YearModifier"] <- nateMod(us.names.df[, "Year"])
-
-# Compute the bare proportion of female names
-# ddply not necessary, since we're not changing the mapping
-
-us.names.df[, "PropF"] <- with(us.names.df, F/(F + M))
-
-# Male is just 1 - PropF
-
-us.names.df[, "PropM"] <- 1 - us.names.df[, "PropF"]
-
-## in practical terms very few names in a given year are ambiguous
-## roughly 10% are not 1 or 0 and > 40% of those are 0-0.1 or 0.8-1
-## There is still some value to retaining this information
-
-## Sums up the proportion of female (male) names 
-
-# populate name column quickly 
-us.final.df <- data.frame(Name = sort(unique(us.names.df[, "Name"])), stringsAsFactors = FALSE)
-
-# MUCH faster than ddply or tapply
-us.final.df[, "SumPropF"] <- with(us.names.df, rowsum(PropF*YearModifier, Name))
-us.final.df[, "SumPropM"] <- with(us.names.df, rowsum(PropM*YearModifier, Name))
 
 
-# Counts appearances by years (used to normalize the result)
-us.final.df <- merge(us.final.df, count(us.names.df, "Name"), by = "Name")
- 
-# This is a bit of spaghetti code, but it's our normalization  
-us.final.df[, "ImputedProbF"] <- us.final.df[, "SumPropF"] / us.final.df[, "freq"]
-us.final.df[, "ImputedProbM"] <- us.final.df[, "SumPropM"] / us.final.df[, "freq"]
-
-# I don't know if a boolean is faster to read from a csv in Ruby
-# but this allows us to reject names which have *no* other sex
-# occurrences 
-us.final.df[, "AnyFemale"] <- us.final.df[, "ImputedProbF"] > 0
-us.final.df[, "AnyMale"] <- us.final.df[, "ImputedProbM"] > 0
-
-# cleanup the final df
-us.final.df <- us.final.df[, c("Name", "freq", 
-                               "AnyFemale", "ImputedProbF",
-                               "AnyMale", "ImputedProbM")]
-
-names(us.final.df)[2] <- "YearsAppearing"
-
-# Output structure looks like:
-
-#        Name YearsAppearing AnyFemale ImputedProbF AnyMale ImputedProbM
-# 1     Aaban              4     FALSE            0    TRUE            1
-# 2     Aabha              1      TRUE            1   FALSE            0
-# 3     Aabid              1     FALSE            0    TRUE            1
-# 4 Aabriella              1      TRUE            1   FALSE            0
-# 5     Aadam             20     FALSE            0    TRUE            1
-# 6     Aadan              6     FALSE            0    TRUE            1
