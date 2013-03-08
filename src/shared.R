@@ -18,6 +18,10 @@ library(plyr)
 library(reshape2)
 
 
+# RCurl necessary because read.xls will fail gracelessly 
+# on malformed downloads, so we use writeBin
+
+library(RCurl)
 
 ##
 ## Utility functions
@@ -60,7 +64,12 @@ matchSexes <- function(x) {
   return(x.out)
 }
 
+## Download Excel files with RCurl
+## return a character vector for the temp file created
+##
+
 downloadXLS <- function(url, pattern) {
+  
   # Download files as binary and push to a temp directory
   # because read.xls has problems w/ web downloads
   temp.file <- tempfile(pattern = pattern, fileext = ".xls")
@@ -69,6 +78,8 @@ downloadXLS <- function(url, pattern) {
   return(temp.file)
 }
 
+# turn counts into imputed probability of a name being male
+# or female. Very basic at the moment
 
 probProcess <- function(data) {
   # structure will look like this:

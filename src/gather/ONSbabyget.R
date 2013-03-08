@@ -15,9 +15,7 @@ readONSNames <- function() {
   # necessary because ONS keeps records as .xls (multi-sheet)
   # reading XLS files with gdata requires a perl installation
   library(gdata)
-  # RCurl necessary because read.xls will fail gracelessly 
-  # on malformed downloads, so we use writeBin
-  library(RCurl)
+
   # if needed, the path to perl can be set as an argument here
   installXLSXsupport()
   ons.base.url <- "http://www.ons.gov.uk"
