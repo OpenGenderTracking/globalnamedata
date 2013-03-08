@@ -60,5 +60,12 @@ matchSexes <- function(x) {
   return(x.out)
 }
 
-
+downloadXLS <- function(url, pattern) {
+  # Download files as binary and push to a temp directory
+  # because read.xls has problems w/ web downloads
+  temp.file <- tempfile(pattern = pattern, fileext = ".xls")
+  f <- getBinaryURL(url)
+  writeBin(f, temp.file)
+  return(temp.file)
+}
 

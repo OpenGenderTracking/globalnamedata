@@ -62,16 +62,8 @@ readONSNames <- function() {
   # drop columns which are auto-named
 
   wrapXLS <- function(url) {
-    downloadXLS <- function(url) {
-      # Download files as binary and push to a temp directory
-      # because read.xls has problems w/ web downloads
-      temp.file <- tempfile(pattern = "ONS", fileext = ".xls")
-      f <- getBinaryURL(url)
-      writeBin(f, temp.file)
-      return(temp.file)
-    }
-
-    temp.file <- downloadXLS(url)
+    
+    temp.file <- downloadXLS(url, pattern = "ONS")
 
     # find which sheet we need to look at as well as
     # which gender are we looking at.
