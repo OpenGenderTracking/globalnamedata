@@ -11,27 +11,30 @@ library(RCurl)
 installXLSXsupport()
 
 
-
-
-
-
-# index page for data 
-ons.base.url <- "http://www.ons.gov.uk"
-ons.index <- "rel/vsob1/baby-names--england-and-wales/index.html"
-index.doc <- htmlParse(file.path(ons.base.url, ons.index))
-
 # somewhat fragile path to individual data pages
 
-year.pages <- xpathSApply(index.doc, 
+ons.base.url <- "http://www.ons.gov.uk"
+
+indexGet <- function() {
+  # index page for data 
+  
+  ons.index <- "rel/vsob1/baby-names--england-and-wales/index.html"
+  index.doc <- htmlParse(file.path(ons.base.url, ons.index))
+  year.pages <- xpathSApply(index.doc, 
                           "//div[@class = 'previous-releases-results']//a", 
                           xmlAttrs)
 
-year.pages <- paste(ons.base.url,
-                    year.pages,
-                    sep="")
+  year.pages <- paste(ons.base.url,
+                      year.pages,
+                      sep="")
+  # drop summary page for now
+  year.pages <- year.pages[!grepl("1904-1994", year.pages)]
+  return(year.pages)
+}
 
-# drop summary page for now
-year.pages <- year.pages[!grepl("1904-1994", year.pages)]
+
+year.pages <- indexGet()
+
 
 tableGet <- function(url) {
   tables <- xpathSApply(htmlParse(url), 
@@ -47,22 +50,25 @@ tableGet <- function(url) {
 
 year.tables <- sapply(year.pages, tableGet)
 
-year.tables <- paste(ons.base.url, year.tables, sep="")
+year.tables <- paste0(ons.base.url, year.tables)
 
 # drop columns which are auto-named
 
 wrapXLS <- function(url) {
-  # wrap read.xls with a separate download call
-  # because read.xls has problems w/ web downloads
-  temp.file <- paste(tempfile(), "xls", sep=".")
-  
-  f <- getBinaryURL(url)
-  writeBin(f, temp.file)
-  
-  sheet.names <- sheetNames(temp.file)
-  
+  downloadXLS <- function(url) {
+    # Download files as binary and push to a temp directory
+    # because read.xls has problems w/ web downloads
+    temp.file <- tempfile(pattern = "ONS", fileext = ".xls")
+    f <- getBinaryURL(url)
+    writeBin(f, temp.file)
+    return(temp.file)
+  }
+
+  temp.file <- downloadXLS(url)
+
   # find which sheet we need to look at as well as
   # which gender are we looking at.
+  sheet.names <- sheetNames(temp.file)
   sheet.loc <- grepl("(Boy|Girl)s names", sheet.names)
   if (any(sheet.loc)) {
     # only will happen if ONS changes structure of xls files
@@ -70,31 +76,35 @@ wrapXLS <- function(url) {
       stop("too many sheets found")
     }
     sheet.number <- which(sheet.loc)
-    gender <- ifelse(grep("Boy", sheet.names[sheet.loc]), "M", "F")
-    xls.df <- read.xls(temp.file, sheet=sheet.number, method="csv",
-                       skip=2, stringsAsFactors = FALSE)
+
+    xls.df <- read.xls(temp.file, sheet = sheet.number, method = "csv",
+                       skip = 2, stringsAsFactors = FALSE)
     xls.df <- xls.df[, names(xls.df)[!grepl("X(\\.?[0-9]*)?", names(xls.df))]]
-    xls.df[, "Sex"] <- gender
+    xls.df[, "Sex"] <- ifelse(grepl("Boy", sheet.names[sheet.loc]), "M", "F")
     xls.df[, "Year"] <- basename(sub("([0-9]{4})/[^/]*$", "\\1", url))
   } else {
     stop("no full sheet found")
   }
+
   unlink(temp.file)
   closeAllConnections()
-  
+
+  # cleanup df
+  # ONS reports numbers as strings with commas, etc.
+  xls.df[, "Count"] <- as.numeric(gsub(",|\\.|;", "", xls.df[, "Count"]))
+  xls.df <- xls.df[, c("Name", "Count", "Sex", "Year")]
+  xls.df <- xls.df[complete.cases(xls.df[, "Count"]), ]
+
   return(xls.df)
 }
 
-alluk.df <- do.call(rbind, lapply(year.tables, wrapXLS))
+alluk.list <- lapply(year.tables, wrapXLS)
+
 
 # cleanup df
-
-alluk.df[, "Count"] <- as.numeric(gsub(",|\\.|;", "", alluk.df[, "Count"]))
-alluk.df <- alluk.df[, c("Name", "Count", "Sex", "Year")]
-alluk.df <- alluk.df[complete.cases(alluk.df[, "Count"]), ]
 
 ## should use matchsexes from SSAbabyget
 ## really, those should be loaded first.
 
-alluk.df <- ddply(alluk.df, "Year", function(x) matchSexes(x))
+# alluk.df <- ddply(alluk.df, "Year", function(x) matchSexes(x))
 
