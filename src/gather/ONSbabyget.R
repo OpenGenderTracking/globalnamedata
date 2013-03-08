@@ -90,7 +90,8 @@ readONSNames <- function() {
     # ONS reports numbers as strings with commas, etc.
     xls.df[, "Count"] <- as.numeric(gsub(",|\\.|;", "", xls.df[, "Count"]))
     xls.df <- xls.df[, c("Name", "Count", "Sex", "Year")]
-    xls.df <- xls.df[grepl("^[^A-Z]*$", xls.df[, "Name"]), ]
+    xls.df <- xls.df[grep("^[^A-Z]*$", xls.df[, "Name"], invert = TRUE), ]
+    xls.df[, "Name"] <- gsub("^\\s+|\\s+$", "", xls.df[, "Name"])
     xls.df <- xls.df[complete.cases(xls.df[, "Count"]), ]
 
     return(xls.df)
@@ -100,7 +101,6 @@ readONSNames <- function() {
 
   ## should use matchSexes() from SSAbabyget
   ## really, those should be loaded first.
-
   alluk.df <- ddply(alluk.df, "Year", function(x) matchSexes(x))
   return(alluk.df)
 }

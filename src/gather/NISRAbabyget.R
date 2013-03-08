@@ -5,3 +5,4 @@
 
 temp.nisra <- downloadXLS(url = "http://www.nisra.gov.uk/archive/demography/publications/babynames/Full_Name_List_9711.xls",
                           pattern = "nisra")
+nisra.index <- read.xls(temp.nisra, sheet = 1)
