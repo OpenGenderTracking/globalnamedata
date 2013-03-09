@@ -1,5 +1,3 @@
-Tools to download and process name data from various sources.
-
 ## Setup
 
 The easiest way to set up Global Name Data is to clone the repo and open an R console in the base directory. 
