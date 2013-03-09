@@ -14,18 +14,18 @@ Because different governments store and expose their birth information in many d
 
 __Import__
 
-* `XML`
-* `RCurl`
-* `gdata`
+* `XML` [details](http://cran.r-project.org/web/packages/XML/index.html)
+* `RCurl` [details](http://cran.r-project.org/web/packages/RCurl/index.html)
+* `gdata` [details](http://cran.r-project.org/web/packages/gdata/index.html)
 
 __Data handling__
 
-* `plyr`
-* `reshape2`
+* `plyr` [details](http://cran.r-project.org/web/packages/plyr/index.html)
+* `reshape2` [details](http://cran.r-project.org/web/packages/reshape2/index.html)
 
 `RCurl` and `gdata` will introduce external dependencies, namely Curl and perl (nearly any version in reasonable use will work). On *NIX systems this shouldn't present a problem as both should already be installed. 
 
-Each package need only be installed once in an R environment and will persist across sessions. 
+Each package need only be installed once in an R environment and will persist across sessions. [Installing R packages](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages).
 
 Packages may be by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2"))` into the R console. The package installer will determine and install package dependencies as needed.
 
