@@ -8,7 +8,7 @@ Functions for downloading and processing data from the various sources are expos
 
 ### Dependencies
 
-Any version of R 2.14 or greater should work for this project. Prior to 2.14 there were some differences in how R handles regular expressions but this may or may not impact the project materially. The project was built using R 2.15.2 in OS X.
+The project was built using R 2.15.2 in OS X. Any version of [R](http://www.r-project.org/) which is supported by the packages used should work but we recommend a relatively recent version.
 
 Because different governments store and expose their birth information in many different ways, Global Name Data depends on a variety of R packages for data import and handling.
 
@@ -25,9 +25,7 @@ __Data handling__
 
 `RCurl` and `gdata` will introduce external dependencies, namely Curl and perl (nearly any version in reasonable use will work). On *NIX systems this shouldn't present a problem as both should already be installed. 
 
-Each package need only be installed once in an R environment and will persist across sessions. [Installing R packages](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages).
-
-Packages may be by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2"))` into the R console. The package installer will determine and install package dependencies as needed.
+Packages may be installed by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2"))` into the R console. The package installer will determine and install package dependencies as needed. Information on installing R packages is [here](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages). Each package need only be installed once in an R environment and will persist across sessions.
 
 ### Classification
 
