@@ -84,4 +84,4 @@ Scotland only provides full name data for 2009 and 2010. Summary data is offered
 
 # License 
 
-See the [LICENSE](https://github.com/OpenGenderTracking/globalnamedata/blob/master/LICENSE.md) file for details. (*tl;dr: MIT for code, various open licenses for data*).
+See the [LICENSE](https://github.com/OpenGenderTracking/globalnamedata/blob/master/LICENSE.md) file for details.
