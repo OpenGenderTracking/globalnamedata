@@ -19,13 +19,15 @@ downloadSSA <- function() {
 
 ## Scotland Dowload
 downloadScotland <- function() {
-  gro.base <- "http://www.gro-scotland.gov.uk"
+  gro.base <- "http://www.gro-scotland.gov.uk/files2/stats"
   
-  gro.files <- c("files2/stats/popular-forenames/babiesnames09-table4.csv", 
-                 "files2/stats/popular-forenames/babiesnames2010-table4.csv")
+  gro.files <- c("popular-forenames/babiesnames09-table4.csv", 
+                 "popular-forenames/babiesnames2010-table4.csv")
   assets.path <- file.path(getwd(), "assets", "scotlandgro")
   dlname <- function(url) {
-    year <- paste0("20", gsub("[a-z]*(?:[0-9]{2})?([0-9]{2}).*$", "\\1", basename(url)))
+    year <- paste0("20", 
+                   gsub("[a-z]*(?:[0-9]{2})?([0-9]{2}).*$", 
+                        "\\1", basename(url)))
     download.file(url,
                   destfile = file.path(assets.path,
                                        paste0("gro", year, ".csv")))
@@ -66,8 +68,9 @@ downloadONS <- function() {
     # index page for data 
     ons.index <- "rel/vsob1/baby-names--england-and-wales/index.html"
     index.doc <- htmlParse(file.path(ons.base.url, ons.index))
+    xpath.release <- "//div[@class = 'previous-releases-results']//a"
     year.pages <- xpathSApply(index.doc, 
-                              "//div[@class = 'previous-releases-results']//a", 
+                              xpath.release, 
                               xmlAttrs)
     
     year.pages <- paste(ons.base.url,
@@ -83,8 +86,10 @@ downloadONS <- function() {
                           "//div[@class = 'srp-pubs-list']//a", 
                           xmlAttrs)
     tables <- tables[grepl("reference", tables)]
-    excel.out <- xpathSApply(htmlParse(paste(ons.base.url, tables, sep="")),
-                             "//div[@class = 'download-options']//a[@class  = 'xls']",
+    excel.doc <- 
+    xpath.xls <- "//div[@class='download-options']//a[@class='xls']"
+    excel.out <- xpathSApply(htmlParse(paste0(ons.base.url, tables)),
+                             xpath.xls,
                              xmlAttrs)
     # the class and the href are both attributes
     return(excel.out[1, ])

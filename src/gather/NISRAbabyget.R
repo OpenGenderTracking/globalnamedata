@@ -32,7 +32,7 @@ readNISRANames <- function(download = FALSE) {
 	  data <- data[, !grepl("Rank", data[2, ])]
 	  # year.ind allows us to split out columns 
 	  year.ind <- as.numeric(data[1, ])
-	  # we create a list because the dataframes will all be different dimensions
+	  # Create a list because the dataframes will all be different dimensions
 	  df.list <- vector(mode = "list", length = length(unique(year.ind)))
 	  for (i in seq_along(unique(year.ind))) {
 	    # I feel filthy
@@ -65,6 +65,7 @@ readNISRANames <- function(download = FALSE) {
 	boys.df <- nisraSplit(boys)
 	boys.df[, "Sex"] <- "M"
 
-	df.out <- ddply(rbind(girls.df, boys.df), "Year", function(x) matchSexes(x))
+	df.out <- ddply(rbind(girls.df, boys.df), 
+                  "Year", function(x) matchSexes(x))
 	return(df.out)
 }

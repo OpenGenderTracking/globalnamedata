@@ -24,7 +24,8 @@ matchSexes <- function(x) {
   # 5    Minnie   F  1746 1880
   # 6  Margaret   F  1578 1880
   
-  x.out <- dcast(x[, c("Name", "Sex", "Count")], Name ~ Sex, sum, value.var = "Count")
+  x.out <- dcast(x[, c("Name", "Sex", "Count")], 
+                 Name ~ Sex, sum, value.var = "Count")
   ## x.out structure
   #     Name  F   M
   # 1  Aaron  0 102
@@ -72,5 +73,16 @@ cleanupNC <- function(data) {
   return(data)
 }
 
-
+# expects northern ireland, scotland and england 
+# as ni.df, scot.df, ew.df respectively
+mergeUK <- function() {
+  require(plyr)
+  nis <- ddply(merge(scot.df, ni.df, all = TRUE), 
+               c("Name", "Year"), 
+               function(x) c(F = sum(x[, "F"]), M = sum(x[, "M"])))
+  uk <- ddply(merge(ew.df, nis, all = TRUE), 
+              c("Name", "Year"), 
+              function(x) c(F = sum(x[, "F"]), M = sum(x[, "M"])))
+  return(uk)
+}
 

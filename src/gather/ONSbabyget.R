@@ -31,12 +31,14 @@ readONSNames <- function(download = FALSE) {
         stop("too many sheets found")
       }
       sheet.number <- which(sheet.loc)
-
+      year <- basename(sub("^[^0-9]*([0-9]{4}).*$", "\\1", basename(file)))
       xls.df <- read.xls(file, sheet = sheet.number, method = "csv",
                          skip = 2, stringsAsFactors = FALSE)
-      xls.df <- xls.df[, names(xls.df)[!grepl("X(\\.?[0-9]*)?", names(xls.df))]]
-      xls.df[, "Sex"] <- ifelse(grepl("Boy", sheet.names[sheet.loc]), "M", "F")
-      xls.df[, "Year"] <- basename(sub("^[^0-9]*([0-9]{4}).*$", "\\1", basename(file)))
+      good.cols <- names(xls.df)[!grepl("X(\\.?[0-9]*)?", names(xls.df))]
+      xls.df <- xls.df[, good.cols]
+      xls.df[, "Sex"] <- ifelse(grepl("Boy", sheet.names[sheet.loc]), 
+                                "M", "F")
+      xls.df[, "Year"] <- year
     } else {
       stop("no full sheet found")
     }
