@@ -78,6 +78,29 @@ downloadXLS <- function(url, pattern) {
   return(temp.file)
 }
 
+# Common cleanup functions
+
+cleanupNC <- function(data) {
+  ## Count
+  data[, "Count"] <- gsub(",|\\.+|;|\\s+", "", data[, "Count"])
+  # remove rows
+  data <- data[grepl("^[0-9]+$", data[, "Count"]), ]
+  data[, "Count"] <- as.numeric(data[, "Count"])
+
+  ## Name
+  # NISRA and Scotland return some multi-byte characters
+  if (any(is.na(nchar(data[, "Name"], allowNA = TRUE)))) {
+    data[, "Name"] <- iconv(data[, "Name"],
+                            from = "latin1",
+                            to = "UTF-8")
+  }
+  data[, "Name"] <- gsub("^\\s+|\\s+$", "", data[, "Name"])
+  data <- data[nchar(data[, "Name"]) > 0, ]
+  rownames(data) <- as.character(1:nrow(data))
+  return(data)
+}
+
+
 # turn counts into imputed probability of a name being male
 # or female. Very basic at the moment
 
@@ -168,4 +191,8 @@ probProcess <- function(data) {
   # 6     Aadan              6     FALSE            0    TRUE            1
   return(data.out)
 }
+
+
+
+
 

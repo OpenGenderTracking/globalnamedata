@@ -14,12 +14,9 @@ readScotlandNames <- function() {
     girls[, "Sex"] <- "F"
     boys[, "Sex"] <- "M"
     data.out <- rbind(girls, boys)
+    data.out <- cleanupNC(data.out)
 
-    data.out[, "Count"] <- gsub(",|\\.+|;|\\s+", "", data.out[, "Count"])
-    data.out <- data.out[grepl("^[0-9]+$", data.out[, "Count"]), ]
-    data.out[, "Name"] <- iconv(data.out[, "Name"], from = "latin1", to = "UTF-8")
-    data.out <- data.out[nchar(data.out[, "Name"]) > 0, ]
-    data.out[, "Count"] <- as.numeric(data.out[, "Count"])
+    
     return(data.out)
   }
   urls <- c("http://www.gro-scotland.gov.uk/files2/stats/popular-forenames/babiesnames09-table4.csv",
@@ -31,7 +28,3 @@ readScotlandNames <- function() {
 
 
 scot.df <- readScotlandNames()
-
-
-
-

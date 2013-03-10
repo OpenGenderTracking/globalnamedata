@@ -33,7 +33,8 @@ readSSANames <- function() {
     yr.out <- read.csv(filepath, 
                        col.names = c("Name", "Sex", "Count"), 
                        header = FALSE, as.is = TRUE)
-    yr.out[, "Year"] <- gsub("yob([0-9]{4})\\.txt", "\\1", basename(filepath))
+    yr.out[, "Year"] <- as.numeric(gsub("yob([0-9]{4})\\.txt", "\\1", basename(filepath)))
+    yr.out <- cleanupNC(yr.out)
     return(yr.out)
   }
 
@@ -50,6 +51,7 @@ readSSANames <- function() {
 }
 
 # read and output to data frame
-# us.names.df <- readSSANames()
+
+us.df <- readSSANames()
 
 

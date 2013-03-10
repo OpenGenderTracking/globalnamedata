@@ -6,18 +6,22 @@
 # the data navigator provided by ONS
 #####
 
+# scraping ONS index pages
+library(XML)
+
+# necessary because ONS keeps records as .xls (multi-sheet)
+# reading XLS files with gdata requires a perl installation
+library(gdata)
+
+# if needed, the path to perl can be set as an argument here
+if (length(xlsFormats()) != 2) {
+  installXLSXsupport()
+}
+
 
 
 readONSNames <- function() {
-  # scraping ONS index pages
-  library(XML)
 
-  # necessary because ONS keeps records as .xls (multi-sheet)
-  # reading XLS files with gdata requires a perl installation
-  library(gdata)
-
-  # if needed, the path to perl can be set as an argument here
-  installXLSXsupport()
   ons.base.url <- "http://www.ons.gov.uk"
   # somewhat fragile path to individual data pages
   indexGet <- function() {
@@ -87,25 +91,22 @@ readONSNames <- function() {
     closeAllConnections()
 
     # cleanup df
-    # ONS reports numbers as strings with commas, etc.
-    xls.df[, "Count"] <- as.numeric(gsub(",|\\.|;", "", xls.df[, "Count"]))
     xls.df <- xls.df[, c("Name", "Count", "Sex", "Year")]
-    xls.df <- xls.df[!grepl("^[^A-Z]*$", xls.df[, "Name"]), ]
-    xls.df[, "Name"] <- gsub("^\\s+|\\s+$", "", xls.df[, "Name"])
-    xls.df <- xls.df[complete.cases(xls.df[, "Count"]), ]
+    
+    xls.df <- cleanupNC(xls.df)
+    xls.df[, "Year"] <- as.numeric(xls.df[, "Year"])
 
     return(xls.df)
   }
 
   alluk.df <- do.call(rbind, lapply(year.tables, wrapXLS))
 
-  ## should use matchSexes() from SSAbabyget
-  ## really, those should be loaded first.
   alluk.df <- ddply(alluk.df, "Year", function(x) matchSexes(x))
   return(alluk.df)
 }
 
 # output
-# alluk.df <- readONSNames()
+
+ew.df <- readONSNames()
 
 
