@@ -9,6 +9,7 @@ readScotlandNames <- function(download = FALSE) {
   
   indvData <- function(filepath) {
     data <- read.csv(filepath, skip = 2, stringsAsFactors = FALSE)
+    year <- sub("^[^0-9]*([0-9]{4}).*$", "\\1", basename(filepath))
     data <- data[, !grepl("^X$", names(data))]
     boys <- data[, 1:2]
     girls <- data[, 3:4]
@@ -21,6 +22,7 @@ readScotlandNames <- function(download = FALSE) {
 
     return(data.out)
   }
+  
   files <- list.files(file.path(getwd(), "assets", "scotlandgro"),
                       full.names = TRUE)
 

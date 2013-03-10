@@ -6,7 +6,7 @@ Functions for downloading and processing data from the various sources are expos
 
 ### Dependencies
 
-The project was built using R 2.15.2 in OS X. Any version of [R](http://www.r-project.org/) which is supported by the packages used should work but we recommend a relatively recent version.
+The project was built using R 2.15.2 in OS X. Any version of [R](http://www.r-project.org/) which is supported by the packages used should work but we recommend a relatively recent version. An attempt has been made to preserve portability but Windows users may experience problems as many interactions with the file system take place (especially for downloading data).
 
 Because different governments store and expose their birth information in many different ways, Global Name Data depends on a variety of R packages for data import and handling.
 
@@ -64,7 +64,7 @@ The Social Security Administration provides records for name and gender by year 
 
 ### United Kingdom
 
-Records for the United Kingdom are broken out across England and Wales, Northern Ireland and Scotland. The Office of National Statistics records births for England and Wales while Northern Ireland and Scotland are recorded seperately. In all jurisdictions the minimum number of births per year for each name is 3. 
+Records for the United Kingdom are broken out across England and Wales, Northern Ireland and Scotland. The Office of National Statistics records births for England and Wales while Northern Ireland and Scotland are recorded seperately. In all jurisdictions the minimum number of births per year for each name is 3. Each jurisdiction provides summary data (e.g. top 10 names per year) but we do not download this data or use it in any way.
 
 #### England and Wales
 

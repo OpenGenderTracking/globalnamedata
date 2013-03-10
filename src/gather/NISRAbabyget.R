@@ -48,7 +48,7 @@ readNISRANames <- function(download = FALSE) {
 	  }
 	  return(do.call(rbind, df.list))
 	}
-  
+  assets.path <- file.path(getwd(), "assets", "nisra")
   nisra <- file.path(assets.path, "nisra.xls")
   # I'd like to be more flexible here but the sheet numbering
   # is embedded in the first sheet and building an index from

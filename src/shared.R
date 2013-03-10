@@ -1,12 +1,8 @@
 ########
 ###
-### Packages and utility functions for downloading name data
+### Shared utility functions for downloading name data
 ###
 ########
-
-##
-## Utility functions
-##
 
 # Condense names to single row
 # Many sources include male and female names 
@@ -50,6 +46,10 @@ matchSexes <- function(x) {
 # Common cleanup functions
 
 cleanupNC <- function(data) {
+  capOne <- function(x) {
+    paste0(toupper(substring(x, 1, 1)), 
+           tolower(substring(x, 2)))
+  }
   ## Count
   data[, "Count"] <- gsub(",|\\.+|;|\\s+", "", data[, "Count"])
   # remove rows
@@ -65,6 +65,12 @@ cleanupNC <- function(data) {
   }
   data[, "Name"] <- gsub("^\\s+|\\s+$", "", data[, "Name"])
   data <- data[nchar(data[, "Name"]) > 0, ]
+  # Possibly controversial, but datasets mix case and 
+  # we want to merge
+  data[, "Name"] <- capOne(data[, "Name"])
   rownames(data) <- as.character(1:nrow(data))
   return(data)
 }
+
+
+
