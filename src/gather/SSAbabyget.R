@@ -14,7 +14,6 @@ readSSANames <- function(download = FALSE) {
   # Read a csv from a file, adding the year from the file to 
   # a new column
   readWrap <- function(filepath) {
-    
     yr.out <- read.csv(filepath, 
                        col.names = c("Name", "Sex", "Count"), 
                        header = FALSE, as.is = TRUE)
@@ -25,8 +24,8 @@ readSSANames <- function(download = FALSE) {
 
   # Combine all years into a single dataframe
   # get vector of path names
-  yr.name.files <- list.files(path = file.path(getwd(), "assets", "us"), 
-                              pattern = "yob[0-9]{4}\\.txt", 
+  
+  yr.name.files <- list.files(path = file.path(getwd(), "assets", "us"),  
                               full.names = TRUE)
   
   us.names.df <- do.call(rbind, lapply(yr.name.files, readWrap))
@@ -38,8 +37,5 @@ readSSANames <- function(download = FALSE) {
   return(us.names.df)
 }
 
-# read and output to data frame
-
-us.df <- readSSANames()
 
 

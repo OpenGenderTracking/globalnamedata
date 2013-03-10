@@ -6,25 +6,17 @@
 # the data navigator provided by ONS
 #####
 
-# scraping ONS index pages
-library(XML)
-
-# necessary because ONS keeps records as .xls (multi-sheet)
-# reading XLS files with gdata requires a perl installation
-library(gdata)
-
-# if needed, the path to perl can be set as an argument here
-if (length(xlsFormats()) != 2) {
-  installXLSXsupport()
-}
-
-
-
 readONSNames <- function(download = FALSE) {
   if (download) {
     downloadONS()
   }
-  
+
+  require(gdata)
+  # if needed, the path to perl can be set as an argument here
+  if (length(xlsFormats()) != 2) {
+    installXLSXsupport()
+  }
+
   # drop columns which are auto-named
 
   wrapXLS <- function(file) {
@@ -58,8 +50,9 @@ readONSNames <- function(download = FALSE) {
     return(xls.df)
   }
   
-  files <- list.files(file.path(getwd(), "assets", "ons"))
-  files <- file.path(file.path(getwd(), "assets", "ons"), files)
+  files <- list.files(file.path(getwd(), "assets", "ons"),
+                      full.names = TRUE)
+  
   alluk.df <- do.call(rbind, lapply(files, wrapXLS))
 
   alluk.df <- ddply(alluk.df, "Year", function(x) matchSexes(x))

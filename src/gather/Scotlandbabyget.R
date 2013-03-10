@@ -21,11 +21,10 @@ readScotlandNames <- function(download = FALSE) {
 
     return(data.out)
   }
-  files <- list.files(file.path(getwd(), "assets", "scotlandgro"))
+  files <- list.files(file.path(getwd(), "assets", "scotlandgro"),
+                      full.names = TRUE)
+
   scotland.df <- do.call(rbind, lapply(files, indvData))
   scotland.df <- ddply(scotland.df, "Year", function(x) matchSexes(x))
   return(scotland.df)
 }
-
-
-scot.df <- readScotlandNames()

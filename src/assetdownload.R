@@ -1,14 +1,9 @@
-## XLS download utility function
-
-downloadXLS <- function(url, pattern) {
-  
-  # Download files as binary and push to a temp directory
-  # because read.xls has problems w/ web downloads
-  temp.file <- tempfile(pattern = pattern, fileext = ".xls")
-  f <- getBinaryURL(url)
-  writeBin(f, temp.file)
-  return(temp.file)
-}
+#####
+###
+### Functions to download new copies of the assets
+### Shouldn't be necessary if you use the assets in the repo
+###
+#####
 
 ## SSA Download
 downloadSSA <- function() {
@@ -39,12 +34,11 @@ downloadScotland <- function() {
   closeAllConnections()
 }
 
-
-
-
 ## Nisra download
 
 downloadNISRA <- function() {
+  require(XML)
+  require(RCurl)
   indexGet <- function(index.url) {
     index.doc <- htmlParse(index.url)
     # NISRA links to baby names from their index
@@ -65,6 +59,8 @@ downloadNISRA <- function() {
 ## ONS download
 
 downloadONS <- function() {
+  require(XML)
+  require(RCurl)
   # somewhat fragile path to individual data pages
   indexGet <- function() {
     # index page for data 

@@ -1,13 +1,17 @@
 ### Northern Ireland name dataset
 ## From 1997-2011
 ## provided in a single excel file including boys and girls
-library(XML)
 
 readNISRANames <- function(download = FALSE) {
   if (download) {
     downloadNISRA()
   }
 
+  require(gdata)
+  # if needed, the path to perl can be set as an argument here
+  if (length(xlsFormats()) != 2) {
+    installXLSXsupport()
+  }
 	nisraSplit <- function(data) {
 	  # Years are cell labels for multiple columns
 	  # We fill down each cell w/ the correct year
@@ -54,7 +58,7 @@ readNISRANames <- function(download = FALSE) {
                    stringsAsFactors = FALSE)
   girls <- read.xls(nisra, sheet = 3, 
                     stringsAsFactors = FALSE)
-  
+
 	girls.df <- nisraSplit(girls)
 	girls.df[, "Sex"] <- "F"
 
@@ -64,7 +68,3 @@ readNISRANames <- function(download = FALSE) {
 	df.out <- ddply(rbind(girls.df, boys.df), "Year", function(x) matchSexes(x))
 	return(df.out)
 }
-
-ni.df <- readNISRANames()
-    
-
