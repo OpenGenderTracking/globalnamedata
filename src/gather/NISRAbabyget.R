@@ -3,29 +3,10 @@
 ## provided in a single excel file including boys and girls
 library(XML)
 
-readNISRANames <- function() {
-  
-  indexGet <- function(index.url) {
-  index.doc <- htmlParse(index.url)
-  # NISRA links to baby names from their index
-  archive <- xpathSApply(index.doc, 
-                         "//a[contains(text(), 'Full Baby Names')]", 
-                         xmlAttrs)
-  return(unname(archive))
+readNISRANames <- function(download = FALSE) {
+  if (download) {
+    downloadNISRA()
   }
-
-	nisra.index <- "http://www.nisra.gov.uk/demography/default.asp28.htm"
-	nisra.url <- indexGet(nisra.index)
-	temp.file <- downloadXLS(url = nisra.url, pattern = "nisra")
-
-	# I'd like to be more flexible here but the sheet numbering
-	# is embedded in the first sheet and building an index from
-	# that would be just as brittle and twice as slow
-
-	boys <- read.xls(temp.file, sheet = 2, 
-	                 stringsAsFactors = FALSE)
-	girls <- read.xls(temp.file, sheet = 3, 
-	                  stringsAsFactors = FALSE)
 
 	nisraSplit <- function(data) {
 	  # Years are cell labels for multiple columns
@@ -63,10 +44,19 @@ readNISRANames <- function() {
 	  }
 	  return(do.call(rbind, df.list))
 	}
+  
+  nisra <- file.path(assets.path, "nisra.xls")
+  # I'd like to be more flexible here but the sheet numbering
+  # is embedded in the first sheet and building an index from
+  # that would be just as brittle and twice as slow
 
+  boys <- read.xls(nisra, sheet = 2, 
+                   stringsAsFactors = FALSE)
+  girls <- read.xls(nisra, sheet = 3, 
+                    stringsAsFactors = FALSE)
+  
 	girls.df <- nisraSplit(girls)
 	girls.df[, "Sex"] <- "F"
-
 
 	boys.df <- nisraSplit(boys)
 	boys.df[, "Sex"] <- "M"
