@@ -1,8 +1,16 @@
 ## Setup
 
-The easiest way to set up Global Name Data is to clone the repo and open an R console in the base directory. 
+The easiest way to set up Global Name Data is to clone the repo and open an R console in the base directory of the project. Once there you can run `master.R` and that will bring all the necessary functions into your workspace. 
 
-Functions for downloading and processing data from the various sources are exposed in the workspace as each script in the `src/gather` directory are read in to R. Shared functions for handling data are made available by loading `src/shared.R`.
+Specifically you should run
+
+    source("master.R", chdir = TRUE)
+    
+in the console. That will allow R to set the correct working directory.
+
+## Not an R user?
+
+If you're mainly interest in the data, pre and post classified name data is available in the [data directory](https://github.com/OpenGenderTracking/globalnamedata/tree/master/data).
 
 ### Dependencies
 
