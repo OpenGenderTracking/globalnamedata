@@ -1,3 +1,11 @@
+## What is this?
+
+Most data on names and gender is ill-suited for any serious analytical purpose. Websites which collect data on birth names mainly offer searches, top ten lists and suggestions for parents. Most available data on the web comes either from commercial sources or from summary data.
+
+We have collected birth record data from the United States and the United Kingdom across a number of years for all births in the two countries and are releasing the collected and cleaned up data here. We have also generated a simple gender classified based on incidence of gender by name. You can use this data for any purpose compatible with the [license](https://github.com/OpenGenderTracking/globalnamedata/blob/master/LICENSE.md).
+
+And, unlike any other open record for name data, we've provided the scripts necessary to check our work! You don't need to trust us in order to trust the data.
+
 ## Setup
 
 The easiest way to set up Global Name Data is to clone the repo and open an R console in the base directory of the project. Once there you can run `master.R` and that will bring all the necessary functions into your workspace. 
@@ -12,44 +20,9 @@ in the console. That will allow R to set the correct working directory.
 
 If you're mainly interest in the data, pre and post classified name data is available in the [data directory](https://github.com/OpenGenderTracking/globalnamedata/tree/master/data).
 
-### Dependencies
-
-The project was built using R 2.15.2 in OS X. Any version of [R](http://www.r-project.org/) which is supported by the packages used should work but we recommend a relatively recent version. An attempt has been made to preserve portability but Windows users may experience problems as many interactions with the file system take place (especially for downloading data).
-
-Because different governments store and expose their birth information in many different ways, Global Name Data depends on a variety of R packages for data import and handling.
-
-__Import__
-
-* `XML` [details](http://cran.r-project.org/web/packages/XML/index.html)
-* `RCurl` [details](http://cran.r-project.org/web/packages/RCurl/index.html)
-* `gdata` [details](http://cran.r-project.org/web/packages/gdata/index.html)
-
-__Data handling__
-
-* `plyr` [details](http://cran.r-project.org/web/packages/plyr/index.html)
-* `reshape2` [details](http://cran.r-project.org/web/packages/reshape2/index.html)
-
-`RCurl` and `gdata` will introduce external dependencies, namely Curl and perl (nearly any version in reasonable use will work). On *NIX systems this shouldn't present a problem as both should already be installed. 
-
-Packages may be installed by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2"))` into the R console. The package installer will determine and install package dependencies as needed. Information on installing R packages is [here](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages). Each package need only be installed once in an R environment and will persist across sessions.
-
-### Classification
-
-Currently the Global Name Data project is used to produce gender estimates for byline and content classification in [Open Gender Tracker](https://github.com/OpenGenderTracking/GenderTracker). Each name is associated with a likely gender based on incidence in our name data. Future improvements will include estimates of confidence and mechanisms to test and cross-validate gender classifications.
-
 ## Contributing
 
 We love pull requests. While not required, please try to adhere to [Google's R Style guide](http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html). 
-
-## Preprocessed data
-
-Because name data is often provided under a Creative Commons compatible license, preprocessed data will be released in the `data` directory. 
-
-These will include:
-
-* By country name/gender counts
-* By region (specifically the UK) name/gender counts
-* Classification output by region
 
 # Data
 
@@ -85,6 +58,31 @@ Northern Ireland provides full name data between 1997 and 2011. Like the ONS, su
 #### Scotland
 
 Scotland only provides full name data for 2009 and 2010. Summary data is offered over the past 20 years. General information about birth record data in Scotland is available [here](http://www.gro-scotland.gov.uk/statistics/theme/vital-events/births/bckgr-info.html).
+
+### Classification
+
+Currently the Global Name Data project is used to produce gender estimates for byline and content classification in [Open Gender Tracker](https://github.com/OpenGenderTracking/GenderTracker). Each name is associated with a likely gender based on incidence in our name data. Future improvements will include estimates of confidence and mechanisms to test and cross-validate gender classifications.
+
+## Dependencies
+
+The project was built using R 2.15.2 in OS X. Any version of [R](http://www.r-project.org/) which is supported by the packages used should work but we recommend a relatively recent version. An attempt has been made to preserve portability but Windows users may experience problems as many interactions with the file system take place (especially for downloading data).
+
+Because different governments store and expose their birth information in many different ways, Global Name Data depends on a variety of R packages for data import and handling.
+
+__Import__
+
+* `XML` [details](http://cran.r-project.org/web/packages/XML/index.html)
+* `RCurl` [details](http://cran.r-project.org/web/packages/RCurl/index.html)
+* `gdata` [details](http://cran.r-project.org/web/packages/gdata/index.html)
+
+__Data handling__
+
+* `plyr` [details](http://cran.r-project.org/web/packages/plyr/index.html)
+* `reshape2` [details](http://cran.r-project.org/web/packages/reshape2/index.html)
+
+`RCurl` and `gdata` will introduce external dependencies, namely Curl and perl (nearly any version in reasonable use will work). On *NIX systems this shouldn't present a problem as both should already be installed. 
+
+Packages may be installed by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2"))` into the R console. The package installer will determine and install package dependencies as needed. Information on installing R packages is [here](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages). Each package need only be installed once in an R environment and will persist across sessions.
 
 # License 
 
