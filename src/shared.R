@@ -61,6 +61,7 @@ cleanupNC <- function(data) {
                             to = "UTF-8")
   }
   data[, "Name"] <- gsub("^\\s+|\\s+$", "", data[, "Name"])
+  data <- data[grepl("[A-Za-z]+", data[, "Name"]), ]
   data <- data[nchar(data[, "Name"]) > 0, ]
   # Possibly controversial, but datasets mix case and 
   # we want to merge

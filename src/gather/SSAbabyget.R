@@ -13,7 +13,7 @@ readSSANames <- function(download = FALSE) {
   if (download) {
     downloadSSA()
   }
-  
+  require(plyr)
   # Read a csv from a file, adding the year from the file to 
   # a new column
   readWrap <- function(filepath) {
@@ -38,6 +38,5 @@ readSSANames <- function(download = FALSE) {
   # this will take a while. You're looping over 100+ years 
   # comprising ~2 million rows
   us.names.df <- ddply(us.names.df, "Year", function(x) matchSexes(x))
-  unlink(c(names.tmpdir, temp))
   return(us.names.df)
 }

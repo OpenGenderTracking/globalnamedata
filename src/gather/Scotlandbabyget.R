@@ -11,6 +11,7 @@ readScotlandNames <- function(download = FALSE) {
   if (download) {
     downloadScotland()
   }
+  require(plyr)
   # Scotland provides one csv per year (boys and girls)
   indvData <- function(filepath) {
     data <- read.csv(filepath, skip = 2, stringsAsFactors = FALSE)

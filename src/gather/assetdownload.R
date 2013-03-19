@@ -5,59 +5,7 @@
 ###
 #####
 
-## SSA Download
-downloadSSA <- function() {
-  assets.path <- file.path(getwd(), "assets", "us")
-  temp <- tempfile(pattern = "ssa", fileext = ".zip")
-  # download and unzip
-  # See http://www.ssa.gov/oact/babynames/limits.html for info 
-  download.file('http://www.ssa.gov/oact/babynames/names.zip', temp)
-  unzip(temp, exdir = assets.path)
-  unlink(temp, file.path(getwd(), "assets", "us", "*.pdf"))
-  closeAllConnections()
-}
-
-## Scotland Dowload
-downloadScotland <- function() {
-  dlname <- function(url) {
-    year <- paste0("20", 
-                   gsub("[a-z]*(?:[0-9]{2})?([0-9]{2}).*$", 
-                        "\\1", basename(url)))
-    download.file(url,
-                  destfile = file.path(assets.path,
-                                       paste0("gro", year, ".csv")))
-  }
-  gro.base <- "http://www.gro-scotland.gov.uk/files2/stats"
-  
-  gro.files <- c("popular-forenames/babiesnames09-table4.csv", 
-                 "popular-forenames/babiesnames2010-table4.csv")
-  assets.path <- file.path(getwd(), "assets", "scotlandgro")
-  lapply(paste(gro.base, gro.files, sep = "/"), dlname)
-  closeAllConnections()
-}
-
-## Nisra download
-downloadNISRA <- function() {
-  require(XML)
-  require(RCurl)
-  indexGet <- function(index.url) {
-    index.doc <- htmlParse(index.url)
-    # NISRA links to baby names from their index
-    archive <- xpathSApply(index.doc, 
-                           "//a[contains(text(), 'Full Baby Names')]", 
-                           xmlAttrs)
-    return(unname(archive))
-  }
-  assets.path <- file.path(getwd(), "assets", "nisra")
-  nisra.index <- "http://www.nisra.gov.uk/demography/default.asp28.htm"
-  url <- indexGet(nisra.index)
-  writeBin(getBinaryURL(url), file.path(assets.path, "nisra.xls"))
-  closeAllConnections()
-}
-
-
 ## ONS download
-
 downloadONS <- function() {
   require(XML)
   require(RCurl)
@@ -107,4 +55,55 @@ downloadONS <- function() {
   lapply(year.tables, dlname)
   closeAllConnections()
 }
+
+## Nisra download
+downloadNISRA <- function() {
+  require(XML)
+  require(RCurl)
+  indexGet <- function(index.url) {
+    index.doc <- htmlParse(index.url)
+    # NISRA links to baby names from their index
+    archive <- xpathSApply(index.doc, 
+                           "//a[contains(text(), 'Full Baby Names')]", 
+                           xmlAttrs)
+    return(unname(archive))
+  }
+  assets.path <- file.path(getwd(), "assets", "nisra")
+  nisra.index <- "http://www.nisra.gov.uk/demography/default.asp28.htm"
+  url <- indexGet(nisra.index)
+  writeBin(getBinaryURL(url), file.path(assets.path, "nisra.xls"))
+  closeAllConnections()
+}
+
+## Scotland Dowload
+downloadScotland <- function() {
+  dlname <- function(url) {
+    year <- paste0("20", 
+                   gsub("[a-z]*(?:[0-9]{2})?([0-9]{2}).*$", 
+                        "\\1", basename(url)))
+    download.file(url,
+                  destfile = file.path(assets.path,
+                                       paste0("gro", year, ".csv")))
+  }
+  gro.base <- "http://www.gro-scotland.gov.uk/files2/stats"
+  
+  gro.files <- c("popular-forenames/babiesnames09-table4.csv", 
+                 "popular-forenames/babiesnames2010-table4.csv")
+  assets.path <- file.path(getwd(), "assets", "scotlandgro")
+  lapply(paste(gro.base, gro.files, sep = "/"), dlname)
+  closeAllConnections()
+}
+
+## SSA Download
+downloadSSA <- function() {
+  assets.path <- file.path(getwd(), "assets", "us")
+  temp <- tempfile(pattern = "ssa", fileext = ".zip")
+  # download and unzip
+  # See http://www.ssa.gov/oact/babynames/limits.html for info 
+  download.file('http://www.ssa.gov/oact/babynames/names.zip', temp)
+  unzip(temp, exdir = assets.path)
+  unlink(temp, file.path(getwd(), "assets", "us", "*.pdf"))
+  closeAllConnections()
+}
+
 

@@ -16,6 +16,7 @@ readONSNames <- function(download = FALSE) {
   }
 
   require(gdata)
+  require(plyr)
   # if needed, the path to perl can be set as an argument here
   if (length(xlsFormats()) != 2) {
     installXLSXsupport()
