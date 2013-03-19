@@ -19,43 +19,14 @@ probProcess <- function(data) {
   # 5   Abby  6   0 1880
   # 6    Abe  0  50 1880
   
-  # Each name is now associated w/ a *single* row
-  # so we only need to look up one "key" as it were
-  
-  
   # Handling years now, so we convert it to numeric 
   data[, "Year"] <- as.numeric(data[, "Year"])
   
-  # Nate's year logic from https://gist.github.com/natematias/4743564
-  # used for consistency
-  
-  nateMod <- function(x, penalty = 100) {
-    out <- x
-    # hahahaha That's awesome. This is
-    # actually handy http://rmazing.wordpress.com/2013/01/30/the-magic-empty-bracket/
-    out[] <- 1
-    # unless I'm reading it wrong, there's a 
-    # bug in the ruby script. Should be 1 + ...
-    # 1 - ... weights old/new years more than 1960-1980
-    
-    # Post 1980 names shouldn't be penalized b/c we want to
-    # capture m/f dynamics in new 1st gen american names
-    
-    # out[x > 1980] <- 1 + (1960 - x[x > 1980])/penalty
-    out[x < 1960] <- 1 + (x[x < 1960] - 1980)/penalty
-    return(out)
-  }
-  
-  data[, "YearModifier"] <- nateMod(data[, "Year"])
-  
   # Compute the bare proportion of female names
   # ddply not necessary, since we're not changing the mapping
-  
-  data[, "PropF"] <- with(data, F/(F + M))
-  
-  # Male is just 1 - PropF
-  
-  data[, "PropM"] <- 1 - data[, "PropF"]
+  data[, "PropFemale"] <- with(data, F/(F + M))
+  # Male is just 1 - PropFemale
+  data[, "PropMale"] <- 1 - data[, "PropFemale"]
   
   ## in practical terms very few names in a given year are ambiguous
   ## roughly 10% are not 1 or 0 and > 40% of those are 0-0.1 or 0.8-1
@@ -63,26 +34,45 @@ probProcess <- function(data) {
   
   ## Sums up the proportion of female (male) names 
   
+  # count the number of total occurances per gender as well
+  countYears <- function(data, sex) {
+    years <- count(data[data[, sex] > 0, ], vars = c("Name", sex))
+    name.counts <- with(years, rowsum(freq * get(sex), Name, reorder = FALSE))
+    year.counts <- with(years, rowsum(freq, Name, reorder = FALSE))
+    year.df <- data.frame(Name = rownames(year.counts), 
+                          Counts = name.counts,
+                          Appearances = year.counts,
+                          stringsAsFactors = FALSE)
+    names(year.df) <- c("Name", 
+                        paste0("Count", substitute(sex)),
+                        paste0("Sumyears", substitute(sex)))
+    rownames(year.df) <- as.character(1:nrow(year.df))
+    return(year.df)
+  }
+
   # populate name column quickly 
-  data.out <- data.frame(Name = sort(unique(data[, "Name"])), stringsAsFactors = FALSE)
+  data.out <- data.frame(Name = sort(unique(data[, "Name"])),
+                         freq = count(data, "Name")[, 2], 
+                         stringsAsFactors = FALSE)
   
-  # MUCH faster than ddply or tapply
-  data.out[, "SumPropF"] <- with(data, rowsum(PropF*YearModifier, Name))
-  data.out[, "SumPropM"] <- with(data, rowsum(PropM*YearModifier, Name))
-  
+  data.out <- cbind(data.out,  merge(countYears(data, "M"), 
+                                    countYears(data, "F"), 
+                                    by = "Name", all = TRUE)[, -1])
+
   # Counts appearances by years (used to normalize the result)
-  data.out <- merge(data.out, count(data, "Name"), by = "Name")
-  
   # This is a bit of spaghetti code, but it's our normalization  
-  data.out[, "ImputedProbF"] <- data.out[, "SumPropF"] / data.out[, "freq"]
-  data.out[, "ImputedProbM"] <- data.out[, "SumPropM"] / data.out[, "freq"]
-  
+  data.out[, "PropFemale"] <- data.out[, "SumyearsF"] / data.out[, "freq"]
+  data.out[, "PropMale"] <- data.out[, "SumyearsM"] / data.out[, "freq"]
+
   # cleanup the final df
+  data.out[is.na(data.out)] <- 0
+  # drops intermediate columns and rename
   data.out <- data.out[, c("Name", "freq", 
-                           "ImputedProbF",
-                           "ImputedProbM")]
-  
-  names(data.out)[2] <- "YearsAppearing"
-  
+                           "PropFemale", "CountF",
+                           "PropMale", "CountM")]
+  names(data.out) <- c("Name", "YearsAppearing", 
+                       "PropFemale", "CountsFemale",
+                       "PropMale", "CountsMale")
+  data.out[, "Name"] <- as.character(data.out[, "Name"])
   return(data.out)
 }
