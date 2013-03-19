@@ -1,7 +1,13 @@
+#####
+###
 ### Northern Ireland name dataset
-## From 1997-2011
-## provided in a single excel file including boys and girls
+### From 1997-2011
+### provided in a single excel file including boys and girls
+###
+#####
 
+# accepts a single argument (download) and returns a data frame
+# for gender/name combinations
 readNISRANames <- function(download = FALSE) {
   if (download) {
     downloadNISRA()
@@ -12,6 +18,8 @@ readNISRANames <- function(download = FALSE) {
   if (length(xlsFormats()) != 2) {
     installXLSXsupport()
   }
+  # because the data is in a single file, we need to split out
+  # years and gender
 	nisraSplit <- function(data) {
 	  # Years are cell labels for multiple columns
 	  # We fill down each cell w/ the correct year
@@ -34,8 +42,10 @@ readNISRANames <- function(download = FALSE) {
 	  year.ind <- as.numeric(data[1, ])
 	  # Create a list because the dataframes will all be different dimensions
 	  df.list <- vector(mode = "list", length = length(unique(year.ind)))
-	  for (i in seq_along(unique(year.ind))) {
-	    # I feel filthy
+	  # years are repeated as columns (with counts, rank, etc)
+    # for presentation purposes in the XLS file
+    # so we can't rely on column names to disambiguate
+    for (i in seq_along(unique(year.ind))) {
 	    # year.ind is the same length as there are columns in data
 	    col.ind <- year.ind %in% unique(year.ind)[i]
 	    df.split <- data[, col.ind]
@@ -43,13 +53,13 @@ readNISRANames <- function(download = FALSE) {
 	    df.split[, "Year"] <- year.ind[col.ind][1]
 	    names(df.split) <- c("Name", "Count", "Year")
 	    df.split <- cleanupNC(df.split)
-
 	    df.list[[i]] <- df.split
 	  }
 	  return(do.call(rbind, df.list))
 	}
   assets.path <- file.path(getwd(), "assets", "nisra")
   nisra <- file.path(assets.path, "nisra.xls")
+
   # I'd like to be more flexible here but the sheet numbering
   # is embedded in the first sheet and building an index from
   # that would be just as brittle and twice as slow

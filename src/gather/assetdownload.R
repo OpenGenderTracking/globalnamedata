@@ -19,11 +19,6 @@ downloadSSA <- function() {
 
 ## Scotland Dowload
 downloadScotland <- function() {
-  gro.base <- "http://www.gro-scotland.gov.uk/files2/stats"
-  
-  gro.files <- c("popular-forenames/babiesnames09-table4.csv", 
-                 "popular-forenames/babiesnames2010-table4.csv")
-  assets.path <- file.path(getwd(), "assets", "scotlandgro")
   dlname <- function(url) {
     year <- paste0("20", 
                    gsub("[a-z]*(?:[0-9]{2})?([0-9]{2}).*$", 
@@ -32,12 +27,16 @@ downloadScotland <- function() {
                   destfile = file.path(assets.path,
                                        paste0("gro", year, ".csv")))
   }
+  gro.base <- "http://www.gro-scotland.gov.uk/files2/stats"
+  
+  gro.files <- c("popular-forenames/babiesnames09-table4.csv", 
+                 "popular-forenames/babiesnames2010-table4.csv")
+  assets.path <- file.path(getwd(), "assets", "scotlandgro")
   lapply(paste(gro.base, gro.files, sep = "/"), dlname)
   closeAllConnections()
 }
 
 ## Nisra download
-
 downloadNISRA <- function() {
   require(XML)
   require(RCurl)
@@ -52,8 +51,7 @@ downloadNISRA <- function() {
   assets.path <- file.path(getwd(), "assets", "nisra")
   nisra.index <- "http://www.nisra.gov.uk/demography/default.asp28.htm"
   url <- indexGet(nisra.index)
-  f <- getBinaryURL(url)
-  writeBin(f, file.path(assets.path, "nisra.xls"))
+  writeBin(getBinaryURL(url), file.path(assets.path, "nisra.xls"))
   closeAllConnections()
 }
 
@@ -95,14 +93,15 @@ downloadONS <- function() {
     return(excel.out[1, ])
   }
   ons.base.url <- "http://www.ons.gov.uk/ons"
+  assets.path <- file.path(getwd(), "assets", "ons")
   year.pages <- indexGet()
+  # call tableGet for each year linked in the index
   year.tables <- sapply(year.pages, tableGet)
   year.tables <- paste0(ons.base.url, year.tables)
-  
-  assets.path <- file.path(getwd(), "assets", "ons")
+  # download function passed to lapply because
+  # we have multiple excel files from a single index
   dlname <- function(url) {
-    f <- getBinaryURL(url)
-    writeBin(f, 
+    writeBin(getBinaryURL(url), 
              file.path(assets.path,basename(url)))
   }
   lapply(year.tables, dlname)

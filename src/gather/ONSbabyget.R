@@ -1,11 +1,15 @@
 #####
-# Read names from the UK's Office of National Statistics (ONS)
-#
-# Names are included in Excel spreadsheets broken up by gender
-# and year. Links to those spreadsheets are gathered from 
-# the data navigator provided by ONS
+###
+### Read names from the UK's Office of National Statistics (ONS)
+###
+### Names are included in Excel spreadsheets broken up by gender
+### and year. Links to those spreadsheets are gathered from 
+### the data navigator provided by ONS
+### 
 #####
 
+# accepts a single argument (download) and returns a data frame
+# for gender/name combinations
 readONSNames <- function(download = FALSE) {
   if (download) {
     downloadONS()
@@ -17,8 +21,9 @@ readONSNames <- function(download = FALSE) {
     installXLSXsupport()
   }
 
-  # drop columns which are auto-named
-
+  # reading excel files and converting into tractable form
+  # wrapped into a function because ONS stores many excel 
+  # sheets (2 per year)
   wrapXLS <- function(file) {
 
     # find which sheet we need to look at as well as
@@ -34,18 +39,19 @@ readONSNames <- function(download = FALSE) {
       year <- basename(sub("^[^0-9]*([0-9]{4}).*$", "\\1", basename(file)))
       xls.df <- read.xls(file, sheet = sheet.number, method = "csv",
                          skip = 2, stringsAsFactors = FALSE)
+      # sheets contain a consierable number of empty columns.
       good.cols <- names(xls.df)[!grepl("X(\\.?[0-9]*)?", names(xls.df))]
       xls.df <- xls.df[, good.cols]
       xls.df[, "Sex"] <- ifelse(grepl("Boy", sheet.names[sheet.loc]), 
                                 "M", "F")
       xls.df[, "Year"] <- year
     } else {
+      # may happen if ONS changes structure or download is corrupted
       stop("no full sheet found")
     }
 
     # cleanup df
     xls.df <- xls.df[, c("Name", "Count", "Sex", "Year")]
-    
     xls.df <- cleanupNC(xls.df)
     xls.df[, "Year"] <- as.numeric(xls.df[, "Year"])
 

@@ -1,11 +1,14 @@
 #####
-# Download Baby Names from SSA and flatten into single data file
-# 
-# The SSA provides all name data in a single zip file which contains
-# .csv files for each year. Both genders are included in each year
-# file
+###
+### Download Baby Names from SSA and flatten into single data file
+### 
+### The SSA provides all name data in a single zip file which contains
+### .csv files for each year. Both genders are included in each year file
+### 
 #####
 
+# accepts a single argument (download) and returns a data frame
+# for gender/name combinations
 readSSANames <- function(download = FALSE) {
   if (download) {
     downloadSSA()
@@ -17,7 +20,9 @@ readSSANames <- function(download = FALSE) {
     yr.out <- read.csv(filepath, 
                        col.names = c("Name", "Sex", "Count"), 
                        header = FALSE, as.is = TRUE)
-    yr.out[, "Year"] <- as.numeric(gsub("yob([0-9]{4})\\.txt", "\\1", basename(filepath)))
+    yr.out[, "Year"] <- as.numeric(gsub("yob([0-9]{4})\\.txt", 
+                                        "\\1", 
+                                        basename(filepath)))
     yr.out <- cleanupNC(yr.out)
     return(yr.out)
   }
@@ -36,6 +41,3 @@ readSSANames <- function(download = FALSE) {
   unlink(c(names.tmpdir, temp))
   return(us.names.df)
 }
-
-
-

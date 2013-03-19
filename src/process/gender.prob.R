@@ -1,8 +1,8 @@
-######
-#
-# functions for gender computation
-#
-######
+#####
+###
+### functions for gender computation
+###
+#####
 
 # turn counts into imputed probability of a name being male
 # or female. Very basic at the moment

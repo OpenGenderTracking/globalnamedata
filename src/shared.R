@@ -1,28 +1,23 @@
-########
+#####
 ###
 ### Shared utility functions for downloading name data
 ###
-########
+#####
 
-# Condense names to single row
-# Many sources include male and female names 
-# in different locations
+# Condense names to single row. Accepts a single argument, x with the form
+#        Name Sex Count Year
+# 1      Mary   F  7065 1880
+# 2      Anna   F  2604 1880
+# 3      Emma   F  2003 1880
+# 4 Elizabeth   F  1939 1880
+# 5    Minnie   F  1746 1880
+# 6  Margaret   F  1578 1880
 
 matchSexes <- function(x) {
-  require(plyr)
   require(reshape2)
   # melt and cast are two broad data handling patterns
   # think of them as the two steps in constructing a
-  # pivot table:
-  
-  # x is of the following form:
-  #        Name Sex Count Year
-  # 1      Mary   F  7065 1880
-  # 2      Anna   F  2604 1880
-  # 3      Emma   F  2003 1880
-  # 4 Elizabeth   F  1939 1880
-  # 5    Minnie   F  1746 1880
-  # 6  Margaret   F  1578 1880
+  # pivot table
   
   x.out <- dcast(x[, c("Name", "Sex", "Count")], 
                  Name ~ Sex, sum, value.var = "Count")
@@ -44,7 +39,8 @@ matchSexes <- function(x) {
   return(x.out)
 }
 
-# Common cleanup functions
+# Common cleanup functions. Accepts a data frame as an argument with
+# columns for Count and Name
 
 cleanupNC <- function(data) {
   capOne <- function(x) {
@@ -85,4 +81,3 @@ mergeUK <- function() {
               function(x) c(F = sum(x[, "F"]), M = sum(x[, "M"])))
   return(uk)
 }
-
