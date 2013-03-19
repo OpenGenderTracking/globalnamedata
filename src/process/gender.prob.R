@@ -7,8 +7,9 @@
 # turn counts into imputed probability of a name being male
 # or female. Very basic at the moment
 
-probProcess <- function(data) {
+probProcess <- function(data, method = "wilson", threshold = 0.6) {
   require(plyr)
+  require(binom)
   # structure will look like this:
   
   #     Name  F   M Year
@@ -59,20 +60,37 @@ probProcess <- function(data) {
                                     countYears(data, "F"), 
                                     by = "Name", all = TRUE)[, -1])
 
-  # Counts appearances by years (used to normalize the result)
-  # This is a bit of spaghetti code, but it's our normalization  
-  data.out[, "PropFemale"] <- data.out[, "SumyearsF"] / data.out[, "freq"]
-  data.out[, "PropMale"] <- data.out[, "SumyearsM"] / data.out[, "freq"]
-
-  # cleanup the final df
+  # cleanup NAs
   data.out[is.na(data.out)] <- 0
+
+  addConf <- function(data, method, threshold) {
+    binom.out <- with(data, binom.confint(CountsMale,
+                                          CountsMale + CountsFemale,
+                                          method = method))
+    data.out <- data.frame(ProbGender = with(binom.out,
+                                             ifelse(upper > threshold, 
+                                                    "Male", "Female")),
+                           Upper = with(binom.out, 
+                                        ifelse(mean > 0.5, upper, 1 - lower)),
+                           Lower = with(binom.out, 
+                                        ifelse(mean > 0.5, lower, 1 - upper)))
+    return(data.out)
+  }
+  
   # drops intermediate columns and rename
   data.out <- data.out[, c("Name", "freq", 
-                           "PropFemale", "CountF",
-                           "PropMale", "CountM")]
+                           "CountF", "CountM")]
   names(data.out) <- c("Name", "YearsAppearing", 
-                       "PropFemale", "CountsFemale",
-                       "PropMale", "CountsMale")
+                       "CountsFemale", "CountsMale")
+  data.out <- cbind(data.out, addConf(data.out, method, threshold))
   data.out[, "Name"] <- as.character(data.out[, "Name"])
+
+#    Name YearsAppearing CountsFemale CountsMale ProbGender Upper     Lower
+#       A              6            0         32       Male     1 0.8928208
+#   A-jay             10            0         52       Male     1 0.9312078
+#    A.j.              2            0          6       Male     1 0.6096657
+#  A'isha             10           52          0     Female     1 0.9312078
+# A'ishah             13           67          0     Female     1 0.9457739
+# Aa'isha              1            3          0     Female     1 0.4385030
   return(data.out)
 }
