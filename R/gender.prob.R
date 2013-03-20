@@ -70,7 +70,7 @@ byNameCount <- function(data) {
 
 #' Read name data formatted as gender-year combinations and 
 #'   accumulates total counts per name
-#' @param A data frame with columns for Name, YearsAppearing,
+#' @param data data frame with columns for Name, YearsAppearing,
 #'   CountsFemale and CountsMale
 #' @param method string passed to binom.confint
 #' @param upper.t numeric indicating the minimum upper bound of 
