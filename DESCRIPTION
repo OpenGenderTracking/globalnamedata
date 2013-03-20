@@ -1,20 +1,30 @@
 Package: namedata
-Maintainer: Adam Hyland <achyland at bocoup.com>
+Maintainer: Adam Hyland <achyland@bocoup.com>
 Authors@R: c(
     person("Adam", "Hyland",
     email = "achyland@bocoup.com", role = c("aut", "cre")),
     person("Irene", "Ros", role = "ctb"))
+Author: Adam Hyland with contributions from I. Ros
 Version: 0.2
 License: MIT | file LICENCE
 Title: Tools for processing name/gender data
-Description: namedata provides a set of tools for gathering name/gender mappings from publicly available data. Functions to process and classify gender by incidence are provided as are open datasets from the United States and the United Kingdom.
-Depends: 
-		R (>= 2.14.0),
-		RCurl,
-		XML,
-		gdata,
-		plyr,
-		reshape2,
-		binom
+Description: namedata provides a set of tools for gathering name/gender
+    mappings from publicly available data. Functions to process and classify
+    gender by incidence are provided as are open datasets from the United
+    States and the United Kingdom.
+Depends:
+    R (>= 2.14.0),
+    RCurl,
+    XML,
+    gdata,
+    plyr,
+    reshape2,
+    binom
 Collate:
     'namedata-package.r'
+    'shared.R'
+    'gender.prob.R'
+    'NISRAbabyget.R'
+    'ONSbabyget.R'
+    'Scotlandbabyget.R'
+    'SSAbabyget.R'

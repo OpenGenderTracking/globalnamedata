@@ -71,7 +71,7 @@ cleanupNC <- function(data) {
 }
 
 #' Recursively merge name datasets by summing comparable name counts
-#' @param list A list of data frames with columns for Name, F, M, and Year
+#' @param dataframes A list of data frames with columns for Name, F, M, and Year
 #' @return A single data frames with columns for Name, F, M, and Year
 #' @keywords merge
 #' @export

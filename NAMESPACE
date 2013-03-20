@@ -1,0 +1,7 @@
+export(addClassifier)
+export(byNameCount)
+export(mergeSum)
+export(readNISRANames)
+export(readONSNames)
+export(readScotlandNames)
+export(readSSANames)
