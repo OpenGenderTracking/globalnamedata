@@ -83,9 +83,18 @@ addClassifier <- function(data, method = "wilson",
                                       ifelse(mean > 0.5, upper, 1 - lower)),
                          Lower = with(binom.out, 
                                       ifelse(mean > 0.5, lower, 1 - upper)))
+# Output structure will look like:
+#   ProbGender Upper     Lower
+# 1       Male     1 0.8897446
+# 2     Female     1 0.6456696
+# 3       Male     1 0.5655175
+# 4     Female     1 0.5655175
+# 5       Male     1 0.9750298
+# 6       Male     1 0.9541819
   return(data.pred)
 }
 
-
-
-
+# processing data requires two steps
+# e.g.
+# uk.out <- byNameCount(uk.df)
+# uk.out <- cbind(uk.out, addClassifier(uk.out))
