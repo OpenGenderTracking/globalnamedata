@@ -4,41 +4,26 @@
 ###
 #####
 
-# turn counts into imputed probability of a name being male
-# or female. Very basic at the moment
 
-probProcess <- function(data, method = "wilson", threshold = 0.6) {
+# accepts a data frame of name-year-gender (e.g. output of readSSANames())
+# input structure should look like this:
+#     Name  F   M Year
+# 1  Aaron  0 102 1880
+# 2     Ab  0   5 1880
+# 3  Abbie 71   0 1880
+# 4 Abbott  0   5 1880
+# 5   Abby  6   0 1880
+# 6    Abe  0  50 1880
+# Returns name-count pairs. 
+byNameCount <- function(data) {
   require(plyr)
-  require(binom)
-  # structure will look like this:
-  
-  #     Name  F   M Year
-  # 1  Aaron  0 102 1880
-  # 2     Ab  0   5 1880
-  # 3  Abbie 71   0 1880
-  # 4 Abbott  0   5 1880
-  # 5   Abby  6   0 1880
-  # 6    Abe  0  50 1880
-  
-  # Handling years now, so we convert it to numeric 
-  data[, "Year"] <- as.numeric(data[, "Year"])
-  
-  # Compute the bare proportion of female names
-  # ddply not necessary, since we're not changing the mapping
-  data[, "PropFemale"] <- with(data, F/(F + M))
-  # Male is just 1 - PropFemale
-  data[, "PropMale"] <- 1 - data[, "PropFemale"]
-  
-  ## in practical terms very few names in a given year are ambiguous
-  ## roughly 10% are not 1 or 0 and > 40% of those are 0-0.1 or 0.8-1
-  ## There is still some value to retaining this information
-  
-  ## Sums up the proportion of female (male) names 
-  
-  # count the number of total occurances per gender as well
+  # count occurences of name by gender-year and by year only
   countYears <- function(data, sex) {
+    # restrict to sex passed by argument
     years <- count(data[data[, sex] > 0, ], vars = c("Name", sex))
+    # count gender-year
     name.counts <- with(years, rowsum(freq * get(sex), Name, reorder = FALSE))
+    # year only
     year.counts <- with(years, rowsum(freq, Name, reorder = FALSE))
     year.df <- data.frame(Name = rownames(year.counts), 
                           Counts = name.counts,
@@ -47,50 +32,60 @@ probProcess <- function(data, method = "wilson", threshold = 0.6) {
     names(year.df) <- c("Name", 
                         paste0("Count", substitute(sex)),
                         paste0("Sumyears", substitute(sex)))
-    rownames(year.df) <- as.character(1:nrow(year.df))
-    return(year.df)
+    
+    return(unrowname(year.df))
   }
 
   # populate name column quickly 
   data.out <- data.frame(Name = sort(unique(data[, "Name"])),
                          freq = count(data, "Name")[, 2], 
                          stringsAsFactors = FALSE)
-  
+
   data.out <- cbind(data.out,  merge(countYears(data, "M"), 
                                     countYears(data, "F"), 
                                     by = "Name", all = TRUE)[, -1])
 
-  # cleanup NAs
+  
+  # cleanup NAs generated from merging countYears()
   data.out[is.na(data.out)] <- 0
 
-  addConf <- function(data, method, threshold) {
-    binom.out <- with(data, binom.confint(CountsMale,
-                                          CountsMale + CountsFemale,
-                                          method = method))
-    data.out <- data.frame(ProbGender = with(binom.out,
-                                             ifelse(upper > threshold, 
-                                                    "Male", "Female")),
-                           Upper = with(binom.out, 
-                                        ifelse(mean > 0.5, upper, 1 - lower)),
-                           Lower = with(binom.out, 
-                                        ifelse(mean > 0.5, lower, 1 - upper)))
-    return(data.out)
-  }
-  
   # drops intermediate columns and rename
   data.out <- data.out[, c("Name", "freq", 
                            "CountF", "CountM")]
   names(data.out) <- c("Name", "YearsAppearing", 
                        "CountsFemale", "CountsMale")
-  data.out <- cbind(data.out, addConf(data.out, method, threshold))
-  data.out[, "Name"] <- as.character(data.out[, "Name"])
-
-#    Name YearsAppearing CountsFemale CountsMale ProbGender Upper     Lower
-#       A              6            0         32       Male     1 0.8928208
-#   A-jay             10            0         52       Male     1 0.9312078
-#    A.j.              2            0          6       Male     1 0.6096657
-#  A'isha             10           52          0     Female     1 0.9312078
-# A'ishah             13           67          0     Female     1 0.9457739
-# Aa'isha              1            3          0     Female     1 0.4385030
+#    Name YearsAppearing CountsFemale CountsMale
+#       A              6            0         32
+#   A-jay             10            0         52
+#    A.j.              2            0          6
+#  A'isha             10           52          0
+# A'ishah             13           67          0
+# Aa'isha              1            3          0
   return(data.out)
 }
+
+
+# both assignment and confidence intervals
+addClassifier <- function(data, method = "wilson", 
+                          upper.t = 0.7, lower.t = 0.05) {
+  require(binom)
+  binom.out <- with(data, binom.confint(CountsMale,
+                                        CountsMale + CountsFemale,
+                                        method = method))
+  # assign as male if we meet the thresholds
+  # Because the ratios are essentially symmetric we can assign
+  # confidence intervals for both in one pass
+  data.pred <- data.frame(ProbGender = with(binom.out,
+                                           ifelse(upper > upper.t &
+                                                  lower > lower.t,
+                                                  "Male", "Female")),
+                         Upper = with(binom.out, 
+                                      ifelse(mean > 0.5, upper, 1 - lower)),
+                         Lower = with(binom.out, 
+                                      ifelse(mean > 0.5, lower, 1 - upper)))
+  return(data.pred)
+}
+
+
+
+

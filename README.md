@@ -24,6 +24,12 @@ If you're mainly interest in the data, pre and post classified name data is avai
 
 We love pull requests. While not required, please try to adhere to [Google's R Style guide](http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html). 
 
+## Classification
+
+Currently the Global Name Data project is used to produce gender estimates for byline and content classification in [Open Gender Tracker](https://github.com/OpenGenderTracking/GenderTracker). Each name is associated with a gender through the `addClassifier()` function using a binomial estimate. The specific method can be passed in as an argument, as can the thresholds for acceptance.
+
+The classifier is specifically left decoupled from the import and processing function to allow for rapid testing and extension. 
+
 # Data
 
 ## Data sources
@@ -59,10 +65,6 @@ Northern Ireland provides full name data between 1997 and 2011. Like the ONS, su
 
 Scotland only provides full name data for 2009 and 2010. Summary data is offered over the past 20 years. General information about birth record data in Scotland is available [here](http://www.gro-scotland.gov.uk/statistics/theme/vital-events/births/bckgr-info.html).
 
-### Classification
-
-Currently the Global Name Data project is used to produce gender estimates for byline and content classification in [Open Gender Tracker](https://github.com/OpenGenderTracking/GenderTracker). Each name is associated with a likely gender based on incidence in our name data. Future improvements will include estimates of confidence and mechanisms to test and cross-validate gender classifications.
-
 ## Dependencies
 
 The project was built using R 2.15.2 in OS X. Any version of [R](http://www.r-project.org/) which is supported by the packages used should work but we recommend a relatively recent version. An attempt has been made to preserve portability but Windows users may experience problems as many interactions with the file system take place (especially for downloading data).
@@ -80,9 +82,13 @@ __Data handling__
 * `plyr` [details](http://cran.r-project.org/web/packages/plyr/index.html)
 * `reshape2` [details](http://cran.r-project.org/web/packages/reshape2/index.html)
 
+__Classification__
+
+* `binom` [details](http://cran.r-project.org/web/packages/binom/index.html)
+
 `RCurl` and `gdata` will introduce external dependencies, namely Curl and perl (nearly any version in reasonable use will work). On *NIX systems this shouldn't present a problem as both should already be installed. 
 
-Packages may be installed by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2"))` into the R console. The package installer will determine and install package dependencies as needed. Information on installing R packages is [here](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages). Each package need only be installed once in an R environment and will persist across sessions.
+Packages may be installed by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2", "binom"))` into the R console. The package installer will determine and install package dependencies as needed. Information on installing R packages is [here](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages). Each package need only be installed once in an R environment and will persist across sessions. 
 
 # License 
 
