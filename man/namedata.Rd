@@ -2,8 +2,17 @@
 \name{namedata}
 \alias{namedata}
 \alias{namedata-package}
-\title{namedata}
+\title{Open Data for names and gender mapping}
 \description{
-  namedata
+  namedata provides a set of tools for gathering
+  name/gender mappings from publicly available data.
+  Functions to process and classify gender by incidence are
+  provided as are open datasets from the United States and
+  the United Kingdom.
+}
+\details{
+  Pre and postprocessed data is available via attached
+  datasets. Simple functions for classification by gender
+  are provided as well.
 }
 

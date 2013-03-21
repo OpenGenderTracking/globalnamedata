@@ -1,11 +1,10 @@
-#####
-###
-### functions for gender computation
-###
-#####
 
 #' Read name data formatted as gender-year combinations and 
 #'   accumulates total counts per name
+#'
+#' Return total counts and years appearing to offer multiple ways to gauge
+#' likelihood of a match.
+#'
 #' @param data A data frame with columns for Name, F, M, and Year
 #' @return Data frame with columns for Name, counts for 
 #'   gender incidence and year counts
@@ -19,7 +18,6 @@ byNameCount <- function(data) {
   # 4 Abbott  0   5 1880
   # 5   Abby  6   0 1880
   # 6    Abe  0  50 1880
-  require(plyr)
   # count occurences of name by gender-year and by year only
   countYears <- function(data, sex) {
     # restrict to sex passed by argument
@@ -70,6 +68,9 @@ byNameCount <- function(data) {
 
 #' Read name data formatted as gender-year combinations and 
 #'   accumulates total counts per name
+#'
+#' Designed to be fast and flexible, allowing for rapid testing
+#'
 #' @param data data frame with columns for Name, YearsAppearing,
 #'   CountsFemale and CountsMale
 #' @param method string passed to binom.confint
@@ -82,9 +83,9 @@ byNameCount <- function(data) {
 #'   intervals
 #'
 #' @export
+#' @importFrom binom binom.confint
 addClassifier <- function(data, method = "wilson", 
                           upper.t = 0.7, lower.t = 0.05) {
-  require(binom)
   binom.out <- with(data, binom.confint(CountsMale,
                                         CountsMale + CountsFemale,
                                         method = method))

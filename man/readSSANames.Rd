@@ -10,8 +10,8 @@
   gender incidence
 }
 \description{
-  Read and return United States name data from the Social
-  Security Administration
+  Download data from the SSA website and convert into a
+  single data frame
 }
 \seealso{
   \code{\link{readONSNames}}, \code{\link{readNISRANames}},

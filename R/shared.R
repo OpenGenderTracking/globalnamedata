@@ -13,8 +13,15 @@
 # 5    Minnie   F  1746 1880
 # 6  Margaret   F  1578 1880
 
+#' Match names across gender count
+#'
+#' Construct a pivot table for imput data frames which are in long format
+#'
+#' @param x A data frames with columns for Name, Sex, Count
+#' and Year
+#' @return A single data frame with columns for Name, F, M, and Year
+#' @importFrom reshape2 dcast
 matchSexes <- function(x) {
-  require(reshape2)
   # melt and cast are two broad data handling patterns
   # think of them as the two steps in constructing a
   # pivot table
@@ -71,12 +78,15 @@ cleanupNC <- function(data) {
 }
 
 #' Recursively merge name datasets by summing comparable name counts
+#'
+#' Function to merge name data from difference countryies, matching by name
+#' and summing counts.
+#'
 #' @param dataframes A list of data frames with columns for Name, F, M, and Year
-#' @return A single data frames with columns for Name, F, M, and Year
+#' @return A single data frame with columns for Name, F, M, and Year
 #' @keywords merge
 #' @export
 mergeSum <- function(dataframes) {
-  require(plyr)
   mergeSumSingle <- function(dfx, dfy) {
     m.out <- ddply(merge(dfx, dfy, all = TRUE), 
                    c("Name", "Year"), 

@@ -1,11 +1,7 @@
-#####
-###
-### Scotland's General Register Office provides
-### full name data only for 2009 and 2010.
-###
-#####
 
 #' Read and return Scotland name data
+#'
+#' Download data from the Scotland GRO website and convert into a single data frame
 #'
 #' @return Data frame with columns for Name, Year, and counts for 
 #'   gender incidence
@@ -14,8 +10,6 @@
 #'   \code{\link{readSSANames}}
 #' @export
 readScotlandNames <- function() {
-  require(plyr)
-
   ## Scotland Dowload
   downloadScotland <- function() {
     dlname <- function(url) {

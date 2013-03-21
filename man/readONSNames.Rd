@@ -10,8 +10,8 @@
   gender incidence
 }
 \description{
-  Read and return name data for England and Wales from the
-  Office of National Statistics
+  Download data from the ONS website and convert into a
+  single data frame
 }
 \seealso{
   \code{\link{readScotlandNames}},

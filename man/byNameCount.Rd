@@ -14,7 +14,7 @@
   incidence and year counts
 }
 \description{
-  Read name data formatted as gender-year combinations and
-  accumulates total counts per name
+  Return total counts and years appearing to offer multiple
+  ways to gauge likelihood of a match.
 }
 

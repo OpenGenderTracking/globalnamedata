@@ -9,7 +9,8 @@
   gender incidence
 }
 \description{
-  Read and return Northern Ireland Name Data
+  Download data from the NISRA website and convert into a
+  single data frame
 }
 \seealso{
   \code{\link{readONSNames}},

@@ -7,7 +7,7 @@
     lower.t = 0.05)
 }
 \arguments{
-  \item{A}{data frame with columns for Name,
+  \item{data}{data frame with columns for Name,
   YearsAppearing, CountsFemale and CountsMale}
 
   \item{method}{string passed to binom.confint}
@@ -25,7 +25,7 @@
   confidence intervals
 }
 \description{
-  Read name data formatted as gender-year combinations and
-  accumulates total counts per name
+  Designed to be fast and flexible, allowing for rapid
+  testing
 }
 

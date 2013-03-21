@@ -1,24 +1,18 @@
-#####
-###
-### Read names from the UK's Office of National Statistics (ONS)
-###
-### Names are included in Excel spreadsheets broken up by gender
-### and year. Links to those spreadsheets are gathered from 
-### the data navigator provided by ONS
-### 
-#####
 
 #' Read and return name data for England and Wales from the
 #'   Office of National Statistics
+#'
+#' Download data from the ONS website and convert into a single data frame
+#'
 #' @return Data frame with columns for Name, Year, and counts for 
 #'   gender incidence
 #' @keywords england
 #' @seealso \code{\link{readScotlandNames}}, \code{\link{readNISRANames}}, 
 #'   \code{\link{readSSANames}}
 #' @export
+#' @importFrom RCurl getBinaryURL
+#' @importFrom XML htmlParse xpathSApply xmlAttrs
 readONSNames <- function() {
-  require(gdata)
-  require(plyr)
   # if needed, the path to perl can be set as an argument here
   if (length(xlsFormats()) != 2) {
     installXLSXsupport()
@@ -26,8 +20,6 @@ readONSNames <- function() {
 
   ## ONS download
   downloadONS <- function() {
-    require(XML)
-    require(RCurl)
     # somewhat fragile path to individual data pages
     indexGet <- function() {
       # index page for data 

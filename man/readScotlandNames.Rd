@@ -9,7 +9,8 @@
   gender incidence
 }
 \description{
-  Read and return Scotland name data
+  Download data from the Scotland GRO website and convert
+  into a single data frame
 }
 \seealso{
   \code{\link{readONSNames}}, \code{\link{readNISRANames}},

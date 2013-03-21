@@ -1,14 +1,9 @@
-#####
-###
-### Download Baby Names from SSA and flatten into single data file
-### 
-### The SSA provides all name data in a single zip file which contains
-### .csv files for each year. Both genders are included in each year file
-### 
-#####
 
 #' Read and return United States name data from the 
 #'   Social Security Administration
+#'
+#' Download data from the SSA website and convert into a single data frame
+#'
 #' @return Data frame with columns for Name, Year, and counts for 
 #'   gender incidence
 #' @keywords america
@@ -16,7 +11,6 @@
 #'   \code{\link{readScotlandNames}}
 #' @export
 readSSANames <- function() {
-  require(plyr)
   ## SSA Download
   downloadSSA <- function() {
     assets.path <- file.path(tempdir(), "assets", "us")
