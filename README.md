@@ -8,17 +8,11 @@ And, unlike any other open record for name data, we've provided the scripts nece
 
 ## Setup
 
-The easiest way to set up Global Name Data is to clone the repo and open an R console in the base directory of the project. Once there you can run `master.R` and that will bring all the necessary functions into your workspace. 
-
-Specifically you should run
-
-    source("master.R", chdir = TRUE)
-    
-in the console. That will allow R to set the correct working directory.
+The easiest way to set up Global Name Data is to install it as an R package with [devtools](https://github.com/hadley/devtools). With `devtools` installed you can install the package directly from github with `install_github("globalnamedata", "OpenGenderTracking")`. Dependencies will be automatically installed.
 
 ## Not an R user?
 
-If you're mainly interest in the data, pre and post classified name data is available in the [data directory](https://github.com/OpenGenderTracking/globalnamedata/tree/master/data).
+If you're mainly interest in the data, pre and post classified name data is available in the [assets directory](https://github.com/OpenGenderTracking/globalnamedata/tree/master/assets).
 
 ## Contributing
 
@@ -64,31 +58,6 @@ Northern Ireland provides full name data between 1997 and 2011. Like the ONS, su
 #### Scotland
 
 Scotland only provides full name data for 2009 and 2010. Summary data is offered over the past 20 years. General information about birth record data in Scotland is available [here](http://www.gro-scotland.gov.uk/statistics/theme/vital-events/births/bckgr-info.html).
-
-## Dependencies
-
-The project was built using R 2.15.2 in OS X. Any version of [R](http://www.r-project.org/) which is supported by the packages used should work but we recommend a relatively recent version. An attempt has been made to preserve portability but Windows users may experience problems as many interactions with the file system take place (especially for downloading data).
-
-Because different governments store and expose their birth information in many different ways, Global Name Data depends on a variety of R packages for data import and handling.
-
-__Import__
-
-* `XML` [details](http://cran.r-project.org/web/packages/XML/index.html)
-* `RCurl` [details](http://cran.r-project.org/web/packages/RCurl/index.html)
-* `gdata` [details](http://cran.r-project.org/web/packages/gdata/index.html)
-
-__Data handling__
-
-* `plyr` [details](http://cran.r-project.org/web/packages/plyr/index.html)
-* `reshape2` [details](http://cran.r-project.org/web/packages/reshape2/index.html)
-
-__Classification__
-
-* `binom` [details](http://cran.r-project.org/web/packages/binom/index.html)
-
-`RCurl` and `gdata` will introduce external dependencies, namely Curl and perl (nearly any version in reasonable use will work). On *NIX systems this shouldn't present a problem as both should already be installed. 
-
-Packages may be installed by typing `install.packages(c("XML", "RCurl", "gdata", "plyr", "reshape2", "binom"))` into the R console. The package installer will determine and install package dependencies as needed. Information on installing R packages is [here](http://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages). Each package need only be installed once in an R environment and will persist across sessions. 
 
 # License 
 
