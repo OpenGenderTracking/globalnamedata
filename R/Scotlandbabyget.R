@@ -2,6 +2,8 @@
 #' Read and return Scotland name data
 #'
 #' Download data from the Scotland GRO website and convert into a single data frame
+#' Downloading and converting data will take some time. The resultant dataset is
+#' provided as \code{\link{scotnames}}
 #'
 #' @return Data frame with columns for Name, Year, and counts for 
 #'   gender incidence
@@ -25,8 +27,8 @@ readScotlandNames <- function() {
     gro.files <- c("popular-forenames/babiesnames09-table4.csv", 
                    "popular-forenames/babiesnames2010-table4.csv")
     assets.path <- file.path(tempdir(), "assets", "scotlandgro")
+    dir.create(assets.path, recursive = TRUE)
     lapply(paste(gro.base, gro.files, sep = "/"), dlname)
-    closeAllConnections()
     return(assets.path)
   }
   # Scotland provides one csv per year (boys and girls)
@@ -54,6 +56,7 @@ readScotlandNames <- function() {
 
   scotland.df <- do.call(rbind, lapply(files, indvData))
   scotland.df <- ddply(scotland.df, "Year", function(x) matchSexes(x))
-  unlink(scot.path)
+  unlink(scot.path, recursive = TRUE)
+  closeAllConnections()
   return(scotland.df)
 }

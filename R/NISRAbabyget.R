@@ -2,6 +2,8 @@
 #' Read and return Northern Ireland Name Data
 #'
 #' Download data from the NISRA website and convert into a single data frame
+#' Downloading and converting data will take some time. The resultant dataset is
+#' provided as \code{\link{ninames}}
 #'
 #' @return Data frame with columns for Name, Year, and counts for 
 #'   gender incidence
@@ -28,10 +30,10 @@ readNISRANames <- function() {
       return(unname(archive))
     }
     assets.path <- file.path(tempdir(), "assets", "nisra")
+    dir.create(assets.path, recursive = TRUE)
     nisra.index <- "http://www.nisra.gov.uk/demography/default.asp28.htm"
     url <- indexGet(nisra.index)
     writeBin(getBinaryURL(url), file.path(assets.path, "nisra.xls"))
-    closeAllConnections()
     return(assets.path)
   }
 
@@ -96,6 +98,7 @@ readNISRANames <- function() {
 	df.out <- ddply(rbind(girls.df, boys.df), 
                   "Year", function(x) matchSexes(x))
 
-  unlink(nisra.path)
+  unlink(nisra.path, recursive = TRUE)
+  closeAllConnections()
 	return(df.out)
 }

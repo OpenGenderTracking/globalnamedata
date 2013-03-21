@@ -10,9 +10,11 @@ And, unlike any other open record for name data, we've provided the scripts nece
 
 The easiest way to set up Global Name Data is to install it as an R package with [devtools](https://github.com/hadley/devtools). With `devtools` installed you can install the package directly from github with `install_github("globalnamedata", "OpenGenderTracking")`. Dependencies will be automatically installed.
 
+The package includes functions to process name data and classify by gender as well as datasets (in compressed `.RData` files) for name data. Also included are functions to download the name data from available sources yourself in order to maintain reproducibility.
+
 ## Not an R user?
 
-If you're mainly interest in the data, pre and post classified name data is available in the [assets directory](https://github.com/OpenGenderTracking/globalnamedata/tree/master/assets).
+If you're mainly interest in the data, pre and post classified name data is available in the [assets directory](https://github.com/OpenGenderTracking/globalnamedata/tree/master/assets). If you install the package these will not be included in the install as `.csv` files but will be included as compressed binaries (the data are identical).
 
 ## Contributing
 
@@ -23,8 +25,6 @@ We love pull requests. While not required, please try to adhere to [Google's R S
 Currently the Global Name Data project is used to produce gender estimates for byline and content classification in [Open Gender Tracker](https://github.com/OpenGenderTracking/GenderTracker). Each name is associated with a gender through the `addClassifier()` function using a binomial estimate. The specific method can be passed in as an argument, as can the thresholds for acceptance.
 
 The classifier is specifically left decoupled from the import and processing function to allow for rapid testing and extension. 
-
-# Data
 
 ## Data sources
 

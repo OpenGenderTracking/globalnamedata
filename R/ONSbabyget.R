@@ -3,6 +3,8 @@
 #'   Office of National Statistics
 #'
 #' Download data from the ONS website and convert into a single data frame
+#' Downloading and converting data will take some time. The resultant dataset is
+#' provided as \code{\link{ewnames}}
 #'
 #' @return Data frame with columns for Name, Year, and counts for 
 #'   gender incidence
@@ -53,6 +55,7 @@ readONSNames <- function() {
     }
     ons.base.url <- "http://www.ons.gov.uk/ons"
     assets.path <- file.path(tempdir(), "assets", "ons")
+    dir.create(assets.path, recursive = TRUE)
     year.pages <- indexGet()
     # call tableGet for each year linked in the index
     year.tables <- sapply(year.pages, tableGet)
@@ -64,7 +67,6 @@ readONSNames <- function() {
                file.path(assets.path,basename(url)))
     }
     lapply(year.tables, dlname)
-    closeAllConnections()
     return(assets.path)
   }
   # reading excel files and converting into tractable form
@@ -111,6 +113,7 @@ readONSNames <- function() {
   alluk.df <- do.call(rbind, lapply(files, wrapXLS))
 
   alluk.df <- ddply(alluk.df, "Year", function(x) matchSexes(x))
-  unlink(ons.path)
+  unlink(ons.path, recursive = TRUE)
+  closeAllConnections()
   return(alluk.df)
 }

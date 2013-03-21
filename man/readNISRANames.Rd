@@ -10,7 +10,9 @@
 }
 \description{
   Download data from the NISRA website and convert into a
-  single data frame
+  single data frame Downloading and converting data will
+  take some time. The resultant dataset is provided as
+  \code{\link{ninames}}
 }
 \seealso{
   \code{\link{readONSNames}},
