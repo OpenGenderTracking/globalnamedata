@@ -148,17 +148,21 @@ NULL
 #' 
 #' \item{Name}{String: Birth name as recorded by agencies, may be changed from uppercase}
 #' 
-#' \item{YearsAppearing}{Numeric: Number of years where the name appears}
+#' \item{years.appearing}{Numeric: Number of years where the name appears}
 #' 
-#' \item{CountsFemale}{Numeric: Counts for births with that name recorded as female}
+#' \item{counts.female}{Numeric: Counts for births with that name recorded as female}
 #' 
-#' \item{CountsMale}{Numeric: Counts for births with that name recorded as male}
+#' \item{counts.male}{Numeric: Counts for births with that name recorded as male}
 #' 
-#' \item{ProbGender}{Factor: Likely gender, outputted from the default classifier}
+#' \item{prob.gender}{Factor: Likely gender, outputted from the default classifier}
+#'
+#' \item{emp.male}{Numeric: Empirical proportion of male recorded as gender for the given name}
 #' 
-#' \item{Upper}{Numeric: Upper bound for confidence interval}
+#' \item{est.male}{Numeric: Estimated proportion of male names based on classifier}
+#'
+#' \item{upper}{Numeric: Upper bound for confidence interval}
 #' 
-#' \item{Lower}{Numeric: Lower bound for confidence interval}
+#' \item{lower}{Numeric: Lower bound for confidence interval}
 #'
 #' }
 #'
@@ -178,17 +182,21 @@ NULL
 #' 
 #' \item{Name}{String: Birth name as recorded by agencies, may be changed from uppercase}
 #' 
-#' \item{YearsAppearing}{Numeric: Number of years where the name appears}
+#' \item{years.appearing}{Numeric: Number of years where the name appears}
 #' 
-#' \item{CountsFemale}{Numeric: Counts for births with that name recorded as female}
+#' \item{counts.female}{Numeric: Counts for births with that name recorded as female}
 #' 
-#' \item{CountsMale}{Numeric: Counts for births with that name recorded as male}
+#' \item{counts.male}{Numeric: Counts for births with that name recorded as male}
 #' 
-#' \item{ProbGender}{Factor: Likely gender, outputted from the default classifier}
+#' \item{prob.gender}{Factor: Likely gender, outputted from the default classifier}
+#'
+#' \item{emp.male}{Numeric: Empirical proportion of male recorded as gender for the given name}
 #' 
-#' \item{Upper}{Numeric: Upper bound for confidence interval}
+#' \item{est.male}{Numeric: Estimated proportion of male names based on classifier}
+#'
+#' \item{upper}{Numeric: Upper bound for confidence interval}
 #' 
-#' \item{Lower}{Numeric: Lower bound for confidence interval}
+#' \item{lower}{Numeric: Lower bound for confidence interval}
 #'
 #' }
 #'

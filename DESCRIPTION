@@ -13,7 +13,7 @@ Description: namedata provides a set of tools for gathering name/gender
     gender by incidence are provided as are open datasets from the United
     States and the United Kingdom.
 Depends:
-    R (>= 2.14.0)
+    R (>= 2.14)
 Imports:
     plyr,
     XML,

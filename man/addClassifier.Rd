@@ -3,25 +3,28 @@
 \title{Read name data formatted as gender-year combinations and
   accumulates total counts per name}
 \usage{
-  addClassifier(data, method = "wilson", upper.t = 0.7,
-    lower.t = 0.05)
+  addClassifier(data, method = "ac", lower.t = 0.5,
+    unknown = TRUE, ...)
 }
 \arguments{
   \item{data}{data frame with columns for Name,
-  YearsAppearing, CountsFemale and CountsMale}
+  years.appearing, counts.female and counts.male}
 
   \item{method}{string passed to binom.confint}
 
-  \item{upper.t}{numeric indicating the minimum upper bound
-  of the confidence interval which allows us to classify a
-  name/gender}
-
-  \item{lower.t}{numeric indicating the maximum lower bound
+  \item{lower.t}{numeric indicating the minimum lower bound
   of the confidence interval acceptable for classification}
+
+  \item{unknown}{Logical indicating if you want the
+  classifier to return "unknown" for names with low
+  confidence}
+
+  \item{...}{Additional arguments to be passed to
+  \code{\link{binom.confint}}}
 }
 \value{
   A data frame with the same structure but appended columns
-  for ProbGender (a factor) and Upper and Lower bounds for
+  for prob.gender (a factor) and upper and lower bounds for
   confidence intervals
 }
 \description{
