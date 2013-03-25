@@ -55,13 +55,9 @@ byNameCount <- function(data) {
                            "CountF", "CountM")]
   names(data.out) <- c("Name", "years.appearing", 
                        "counts.female", "counts.male")
-#    Name years.appearing counts.female counts.male
-#       A              6            0         32
-#   A-jay             10            0         52
-#    A.j.              2            0          6
-#  A'isha             10           52          0
-# A'ishah             13           67          0
-# Aa'isha              1            3          0
+  prop.male <- with(data.out, counts.male /(counts.male + counts.female))
+  # return the proportion here 
+  data.out[, "prop.male"] <- prop.male
   return(data.out)
 }
 
@@ -74,55 +70,66 @@ byNameCount <- function(data) {
 #' @param data data frame with columns for Name, years.appearing,
 #'   counts.female and counts.male
 #' @param method string passed to binom.confint
-#' @param lower.t numeric indicating the minimum lower bound of 
-#'   the confidence interval acceptable for classification
-#' @param unknown Logical indicating if you want the classifier to 
-#'   return "unknown" for names with low confidence
+#' @param threshold numeric between 0.5 and 1 indicating the minimum proportion
+#'   of male names required to classify a name as likely male. If threshold is 
+#'   less than 0.5 it will be used as minimum proportion of female names
 #' @param ... Additional arguments to be passed to \code{\link{binom.confint}}
 #'
 #' @return A data frame with the same structure but appended columns for
-#'   prob.gender (a factor) and upper and lower bounds for confidence 
-#'   intervals
+#'   prob.gender (a factor), estimated proportion and upper and lower bounds 
+#'   for confidence intervals
 #'
 #' @export
 #' @importFrom binom binom.confint
-addClassifier <- function(data, method = "ac", 
-                          lower.t = 0.5,
-                          unknown = TRUE, 
-                          ...) {
-  data <- data[, c("Name", "years.appearing",
-                   "counts.female", "counts.male")]
-  binom.out <- with(data, binom.confint(counts.male,
-                                        counts.male + counts.female,
-                                        method = method,
-                                        ...))
-  prop <- with(data, counts.male /(counts.male + counts.female))
+nameBinom <- function(data, method = "ac", 
+                      threshold = 0.9, ...) {
+  # drop columns from other analyses
+  input.cols <- !names(data) %in% c("prob.gender", "upper", "lower", "est.male")
+  data <- data[, input.cols]
 
-  # assign as male if we meet the thresholds
+  pred <- with(data, binom.confint(counts.male, counts.male + counts.female,
+                                   method = method, ...))
+
+  # assign as male/female if we meet the thresholds
+  procThreshold <- function(input, threshold) {
+    if (threshold < 0.5) {
+      treshold <- 1 - threshold
+    }
+    out.val <- rep("Unknown", times = length(input))
+    out.val <- ifelse(input > threshold, 
+                      "Male", ifelse(input < 1 - threshold,
+                                     "Female", out.val))
+    return(out.val)
+  }
+
+  gender.prediction <- procThreshold(pred[, "mean"], threshold)
   # Because the ratios are essentially symmetric we can assign
   # confidence intervals for both in one pass
-  gender.prediction <- with(binom.out, ifelse(mean > 0.5,
-                                              "Male", "Female"))
-  gender.upper <- with(binom.out, ifelse(mean > 0.5, upper, 1 - lower))
-  gender.lower <- with(binom.out, ifelse(mean > 0.5, lower, 1 - upper))
+  gender.upper <- with(pred, ifelse(mean > 0.5, upper, 1 - lower))
+  gender.lower <- with(pred, ifelse(mean > 0.5, lower, 1 - upper))
 
-  gender.prediction <- ifelse(abs(prop - 0.5) + gender.lower > lower.t + 0.05 |
-                              gender.lower > lower.t,
-                              gender.prediction, "Unknown")
-  
   data.pred <- data.frame(prob.gender = gender.prediction,
-                          emp.male = prop,
-                          est.male = binom.out[, "mean"],
+                          est.male = pred[, "mean"],
                           upper = gender.upper,
                           lower = gender.lower)
-
-# Output structure will look like:
-#   prob.gender emp.male est.male    upper     lower
-# 1        Male        1        1 1.020139 0.8726819
-# 2        Male        1        1 1.013403 0.9178043
-# 3        Male        1        1 1.052446 0.5572192
-# 4      Female        0        0 1.013403 0.9178043
-# 5      Female        0        0 1.010707 0.9350666
-# 6     Unknown        0        0 1.055975 0.3825284
   return(cbind(data, data.pred))
 }
+
+
+classifierInfo <- function(data) {
+  last.letter <- factor(tolower(str_sub(data[, "Name"], start = -1)), 
+                        levels = letters)
+  first.letter <- factor(tolower(str_sub(data[, "Name"], end = 1)),
+                         levels = letters)
+  last.two <- str_sub(data[, "Name"], start = -2)  
+
+  vowels <- "[aeiouy]"
+
+
+
+}
+
+
+
+
+
