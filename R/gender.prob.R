@@ -114,22 +114,3 @@ nameBinom <- function(data, method = "ac",
                           lower = gender.lower)
   return(cbind(data, data.pred))
 }
-
-
-classifierInfo <- function(data) {
-  last.letter <- factor(tolower(str_sub(data[, "Name"], start = -1)), 
-                        levels = letters)
-  first.letter <- factor(tolower(str_sub(data[, "Name"], end = 1)),
-                         levels = letters)
-  last.two <- str_sub(data[, "Name"], start = -2)  
-
-  vowels <- "[aeiouy]"
-
-
-
-}
-
-
-
-
-
