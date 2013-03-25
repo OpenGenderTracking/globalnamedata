@@ -10,7 +10,7 @@ And, unlike any other open record for name data, we've provided the scripts nece
 
 The easiest way to set up Global Name Data is to install it as an R package with [devtools](https://github.com/hadley/devtools). With `devtools` installed you can install the package directly from github with `install_github("globalnamedata", "OpenGenderTracking")`. Dependencies will be automatically installed.
 
-The package includes functions to process name data and classify by gender as well as datasets (in compressed `.RData` files) for name data. Also included are functions to download the name data from available sources yourself in order to maintain reproducibility.
+Once installed, the package will make available datasets (in compressed `.RData` format) for each source of name data as well as functions to process and check that data against available records.
 
 ## Not an R user?
 
@@ -22,9 +22,14 @@ We love pull requests. While not required, please try to adhere to [Google's R S
 
 ## Classification
 
-Currently the Global Name Data project is used to produce gender estimates for byline and content classification in [Open Gender Tracker](https://github.com/OpenGenderTracking/GenderTracker). Each name is associated with a gender through the `addClassifier()` function using a binomial estimate. The specific method can be passed in as an argument, as can the thresholds for acceptance.
+Currently the Global Name Data project is used to produce gender estimates for byline and content classification in [Open Gender Tracker](https://github.com/OpenGenderTracking/GenderTracker). Each name is associated with a gender through the `nameBinom()` function using a binomial estimate. The specific method can be passed in as an argument, as can the thresholds for acceptance.
 
-The classifier is specifically left decoupled from the import and processing function to allow for rapid testing and extension. 
+The classifier is specifically left decoupled from the import and processing function to allow for rapid testing and extension. Further, the classifer function itself can operate on individual years (or groups of years) rather than simply the whole dataset. 
+
+Further improvements down the line:
+
+* Pruning of name data via actuarial tables. This may be left to end users but it can improve the performance of the classifier marginally.
+* Introduction of other features for gender classification. Phenome distribution and last-letter choice are informative features of names for a gender classifier. Primary issue is that phenome/letter patterns are culturally dependent and could introduce noise for non-anglophone names.
 
 ## Data sources
 
