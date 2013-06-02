@@ -10,8 +10,8 @@
   Year}
 }
 \value{
-  Data frame with columns for Name, counts for gender
-  incidence and year counts
+  Data frame with columns for Name, count for gender
+  incidence and year count
 }
 \description{
   Return total counts and years appearing to offer multiple

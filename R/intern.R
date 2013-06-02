@@ -1,6 +1,6 @@
 #####
 ###
-### Shared utility functions for downloading name data
+### Internal utility functions for downloading name data
 ###
 #####
 
@@ -84,8 +84,6 @@ cleanupNC <- function(data) {
 #'
 #' @param dataframes A list of data frames with columns for Name, F, M, and Year
 #' @return A single data frame with columns for Name, F, M, and Year
-#' @keywords merge
-#' @export
 mergeSum <- function(dataframes) {
   mergeSumSingle <- function(dfx, dfy) {
     m.out <- ddply(merge(dfx, dfy, all = TRUE), 

@@ -15,5 +15,4 @@
   Function to merge name data from difference countryies,
   matching by name and summing counts.
 }
-\keyword{merge}
 

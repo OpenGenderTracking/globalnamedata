@@ -1,13 +1,13 @@
 \name{nameBinom}
 \alias{nameBinom}
 \title{Read name data formatted as gender-year combinations and
-  accumulates total counts per name}
+  accumulates total count per name}
 \usage{
   nameBinom(data, method = "ac", threshold = 0.9, ...)
 }
 \arguments{
   \item{data}{data frame with columns for Name,
-  years.appearing, counts.female and counts.male}
+  years.appearing, count.female and count.male}
 
   \item{method}{string passed to binom.confint}
 

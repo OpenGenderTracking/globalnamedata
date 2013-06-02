@@ -22,11 +22,12 @@ Imports:
     binom,
     reshape2
 Collate:
-    'shared.R'
-    'gender.prob.R'
     'NISRAbabyget.R'
     'ONSbabyget.R'
     'Scotlandbabyget.R'
     'SSAbabyget.R'
     'datasets.R'
     'namedata.r'
+    'intern.R'
+    'util.R'
+    'classifier.R'
