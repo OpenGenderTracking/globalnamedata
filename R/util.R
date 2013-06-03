@@ -84,7 +84,7 @@ yearBirths <- function(data, bounds = NULL) {
   countBy <- function(x = c("Male", "Female")) {
                       # Contingency table for births
                       births <- with(data, rowsum(get(x), group = Year))
-                      out <- data.frame(Year = rownames(births),
+                      out <- data.frame(Year = as.numeric(rownames(births)),
                                         Births = unname(births),
                                         Gender = match.arg(x))
                       return(out)
@@ -125,7 +125,7 @@ nameMetric <- function(data, names, bounds = NULL, metric) {
                     )
     single.df <- data.frame(Measure = metFun,
                             Births = tot,
-                            Year = rownames(tot),
+                            Year = as.numeric(rownames(tot)),
                             Name = name.single)
     names(single.df)[1] <- metric
     return(single.df)
