@@ -1,5 +1,6 @@
 export(byNameCount)
 export(nameBinom)
+export(nameMetric)
 export(readNISRANames)
 export(readONSNames)
 export(readScotlandNames)
