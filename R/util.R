@@ -96,3 +96,48 @@ yearBirths <- function(data, bounds = NULL) {
   }
   return(data.out)
 }
+
+
+
+#' Compute gender balance
+#'
+#' Determine the per-year gender breakdown for names anchored to 
+#' male, female or neutral
+#'
+#' @param data A data frames with columns for Name, M, F, and Year
+#' e.g. one returned by \code{\link{usnames}}
+#' @param names A character vector of names (potentially of length 1)
+#' @param range An (optional) numeric vector of length 2 
+#' with the start and end years inclusive
+#' @param metric Male, Female or Neutral
+#' @return A single data frame with columns for the metric, number of births
+#' the years and the name. 
+#' @export
+nameMetric <- function(data, names, bounds = NULL, metric) {
+  data <- subset(data, Name %in% names)
+  nameTotal <- function(name.single) {
+    singleton <- subset(data, Name == name.single)
+    tot <- with(singleton, rowsum((M + F), group = Year))
+    metFun <- switch(metric,
+                     Male = singleton[, "M"] / tot,
+                     Female = singleton[, "F"] / tot,
+                     Neutral = 1 - abs(0.5 - singleton[, "M"] / tot) * 2
+                    )
+    single.df <- data.frame(Measure = metFun,
+                            Births = tot,
+                            Year = rownames(tot),
+                            Name = name.single)
+    names(single.df)[1] <- metric
+    return(single.df)
+  }
+  if (length(names) > 1) {
+    names.list <- lapply(names, nameTotal)
+    data.out <- do.call(rbind, names.list)
+  } else {
+    data.out <- nameTotal(names)
+  }
+  if (length(bounds) == 2) {
+    data.out <- subset(data.out, Year %in% do.call(seq, as.list(bounds)))
+  }
+  return(unrowname(data.out))
+}
