@@ -123,11 +123,11 @@ nameMetric <- function(data, names, bounds = NULL, metric) {
                      Female = singleton[, "F"] / tot,
                      Neutral = 1 - abs(0.5 - singleton[, "M"] / tot) * 2
                     )
-    single.df <- data.frame(Measure = metFun,
+    single.df <- data.frame(Proportion = metFun,
+                            Metric = metric,
                             Births = tot,
                             Year = as.numeric(rownames(tot)),
                             Name = name.single)
-    names(single.df)[1] <- metric
     return(single.df)
   }
   if (length(names) > 1) {
