@@ -6,6 +6,8 @@ We have collected birth record data from the United States and the United Kingdo
 
 And, unlike any other open record for name data, we've provided the scripts necessary to check our work! You don't need to trust us in order to trust the data.
 
+You can read about some uses of this data along with code examples at the Bocoup [blog](http://weblog.bocoup.com/global-name-data/).
+
 ## Setup
 
 The easiest way to set up Global Name Data is to install it as an R package with [devtools](https://github.com/hadley/devtools). With `devtools` installed you can install the package directly from github with `install_github("globalnamedata", "OpenGenderTracking")`. Dependencies will be automatically installed.
