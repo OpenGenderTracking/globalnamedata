@@ -14,7 +14,8 @@
   \item{range}{An (optional) numeric vector of length 2
   with the start and end years inclusive}
 
-  \item{metric}{Male, Female or Neutral}
+  \item{metric}{A character vector of length 1. "Male",
+  "Female" or "Neutral"}
 }
 \value{
   A single data frame with columns for the metric, number

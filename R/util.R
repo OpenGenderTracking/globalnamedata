@@ -109,15 +109,17 @@ yearBirths <- function(data, bounds = NULL) {
 #' @param names A character vector of names (potentially of length 1)
 #' @param range An (optional) numeric vector of length 2 
 #' with the start and end years inclusive
-#' @param metric Male, Female or Neutral
+#' @param metric A character vector of length 1. "Male", "Female" or "Neutral"
 #' @return A single data frame with columns for the metric, number of births
 #' the years and the name. 
 #' @export
-nameMetric <- function(data, names, bounds = NULL, metric) {
+nameMetric <- function(data, names, bounds = NULL,
+                       metric) {
   data <- subset(data, Name %in% names)
   nameTotal <- function(name.single) {
     singleton <- subset(data, Name == name.single)
     tot <- with(singleton, rowsum((M + F), group = Year))
+    metric <- match.arg(metric, choices = c("Male", "Female", "Neutral"))
     metFun <- switch(metric,
                      Male = singleton[, "M"] / tot,
                      Female = singleton[, "F"] / tot,
@@ -130,12 +132,9 @@ nameMetric <- function(data, names, bounds = NULL, metric) {
                             Name = name.single)
     return(single.df)
   }
-  if (length(names) > 1) {
-    names.list <- lapply(names, nameTotal)
-    data.out <- do.call(rbind, names.list)
-  } else {
-    data.out <- nameTotal(names)
-  }
+  names.list <- lapply(names, nameTotal)
+  data.out <- do.call(rbind, names.list)
+
   if (length(bounds) == 2) {
     data.out <- subset(data.out, Year %in% do.call(seq, as.list(bounds)))
   }
