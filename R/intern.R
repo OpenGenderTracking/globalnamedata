@@ -19,6 +19,8 @@
 #'
 #' @param x A data frames with columns for Name, Sex, Count
 #' and Year
+#' @param by string denoting common value for data frame (e.g. year or state)
+#'
 #' @return A single data frame with columns for Name, F, M, and Year
 #' @importFrom reshape2 dcast
 matchSexes <- function(x) {
@@ -93,3 +95,30 @@ mergeSum <- function(dataframes) {
   }
   return(Reduce(f = mergeSumSingle, x = dataframes))
 }
+
+#' Download zipped folder and extract to temp directory
+#'
+#' SSA releases names as text files in a directory. Downloading these files 
+#' can be a bit laborious. See http://www.ssa.gov/oact/babynames/limits.html
+#' for details
+#'
+#' @param url string Location for zip file
+#' @return A string containing the path to the directory
+
+zipDir <- function(url) {
+  # Specify temp directory
+  # some environments may pollute the temp directory, so create a new folder
+  assets.path <- file.path(tempdir(), "zipout")
+  # # Unweildy to stream from url to directory while unzipping
+  temp <- tempfile(pattern = "ssa", fileext = ".zip")
+  # # download and unzip (both invoked for side effects)
+  download.file(url, temp)
+  dir.create(assets.path, recursive = TRUE)
+  unzip(temp, exdir = assets.path)
+  # Cleanup temp file and remove explanatory pdf from temp directory
+  unlink(c(temp, file.path(assets.path, "*.pdf")))
+  return(assets.path)
+}
+
+
+
