@@ -39,12 +39,6 @@ matchSexes <- function(x) {
   # 5   Abby  6   0
   # 6    Abe  0  50
 
-  # Add a year column. Year is the same for all rows since
-  # names are grouped per file per year.
-  # Faster/safer than unique(x[, "Year"])
-  # no easy way to extract from the passed argument
-  x.out[, "Year"] <- x[, "Year"][1]
-  
   return(x.out)
 }
 

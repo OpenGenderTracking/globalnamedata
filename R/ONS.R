@@ -112,7 +112,9 @@ readONSNames <- function() {
   
   alluk.df <- do.call(rbind, lapply(files, wrapXLS))
 
-  alluk.df <- ddply(alluk.df, "Year", function(x) matchSexes(x))
+  alluk.df <- ddply(alluk.df, "Year", function(x) {
+                    cbind(matchSexes(x), Year = x[1, "Year"])
+                  })
   unlink(ons.path, recursive = TRUE)
   closeAllConnections()
   return(alluk.df)

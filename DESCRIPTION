@@ -22,10 +22,10 @@ Imports:
     binom,
     reshape2
 Collate:
-    'NISRAbabyget.R'
-    'ONSbabyget.R'
-    'Scotlandbabyget.R'
-    'SSAbabyget.R'
+    'NISRA.R'
+    'ONS.R'
+    'GRO.R'
+    'SSA.R'
     'datasets.R'
     'namedata.r'
     'intern.R'

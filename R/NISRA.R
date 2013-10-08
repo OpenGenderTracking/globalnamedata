@@ -96,7 +96,9 @@ readNISRANames <- function() {
 	boys.df[, "Sex"] <- "M"
 
 	df.out <- ddply(rbind(girls.df, boys.df), 
-                  "Year", function(x) matchSexes(x))
+                  "Year", function(x) {
+                    cbind(matchSexes(x), Year = x[1, "Year"])
+                  })
 
   unlink(nisra.path, recursive = TRUE)
   closeAllConnections()

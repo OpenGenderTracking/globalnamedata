@@ -38,24 +38,20 @@ readSSANames <- function(type) {
                  state = c("State", "Sex", "Year", "Name", "Count"))
   out.names <- c("Name", "Sex", "Year", "Count", "State")
 
-  # temporarily moving the pivot table into this function
-  pivot <- function(x) {
-    dcast(x[, c("Name", "Sex", "Count")],
-          Name ~ Sex, sum, value.var = "Count")
-  }
-
   # Extract content of each text file and convert to a conformable data.frame
   readIndv <- function(path) {
     ind <- read.csv(path, col.names = cols, header = FALSE, as.is = TRUE)
     ind <- cleanupNC(ind)
 
     if(type == "national") {
-      out <- pivot(ind)
+      out <- matchSexes(ind)
       out[, "Year"] <- as.numeric(gsub("yob([0-9]{4})\\.txt",
                                        "\\1",
                                        basename(path)))
     } else {
-      out <- ddply(ind, "Year", pivot)
+      out <- ddply(ind, "Year", function(x) {
+                    cbind(matchSexes(x), Year = x[1, "Year"])
+                  })
       out[, "State"] <- ind[1, "State"]
     }
 
