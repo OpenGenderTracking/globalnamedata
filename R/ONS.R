@@ -22,49 +22,61 @@ readONSNames <- function() {
 
   ## ONS download
   downloadONS <- function() {
+    ons.base.url <- "http://www.ons.gov.uk/ons"
+    ons.index <- "rel/vsob1/baby-names--england-and-wales/index.html"
+    xpath.release <- "//div[@class = 'previous-releases-results']//a"
+    xpath.xls <- "//a[contains(@href, 'xls')]"
+    table.selector <- "//div[@class = 'srp-pubs-list']//a"
+    summary.years <- "1904-1994"
     # somewhat fragile path to individual data pages
     indexGet <- function() {
       # index page for data 
-      ons.index <- "rel/vsob1/baby-names--england-and-wales/index.html"
-      index.doc <- htmlParse(file.path(ons.base.url, ons.index))
-      xpath.release <- "//div[@class = 'previous-releases-results']//a"
-      year.pages <- xpathSApply(index.doc, 
-                                xpath.release, 
-                                xmlAttrs)
       
-      year.pages <- paste(ons.base.url,
-                          year.pages,
-                          sep="")
+      index.doc <- htmlParse(file.path(ons.base.url, ons.index))
+      
+      year.pages <- xpathSApply(index.doc, xpath.release, xmlAttrs)
+      
+      year.pages <- paste0(ons.base.url, year.pages)
       # drop summary page for now
-      year.pages <- year.pages[!grepl("1904-1994", year.pages)]
+      year.pages <- year.pages[!grepl(summary.years, year.pages)]
       return(year.pages)
     }
     
-    tableGet <- function(url) {
+    tableGet <- function(url, filter = "reference") {
       tables <- xpathSApply(htmlParse(url), 
-                            "//div[@class = 'srp-pubs-list']//a", 
+                            table.selector, 
                             xmlAttrs)
-      tables <- tables[grepl("reference", tables)]
-      excel.doc <- 
-      xpath.xls <- "//div[@class='download-options']//a[@class='xls']"
+      tables <- tables[grepl(filter, tables)]
+      
       excel.out <- xpathSApply(htmlParse(paste0(ons.base.url, tables)),
                                xpath.xls,
                                xmlAttrs)
-      # the class and the href are both attributes
-      return(excel.out[1, ])
+      attributes(excel.out) <- NULL
+      return(excel.out)
     }
-    ons.base.url <- "http://www.ons.gov.uk/ons"
+    
     assets.path <- file.path(tempdir(), "assets", "ons")
     dir.create(assets.path, recursive = TRUE)
     year.pages <- indexGet()
     # call tableGet for each year linked in the index
-    year.tables <- sapply(year.pages, tableGet)
-    year.tables <- paste0(ons.base.url, year.tables)
+    # flatten output further
+    year.tables <- paste0(ons.base.url, sapply(year.pages, tableGet))
+
     # download function passed to lapply because
     # we have multiple excel files from a single index
     dlname <- function(url) {
-      writeBin(getBinaryURL(url), 
-               file.path(assets.path,basename(url)))
+      # Generate UUID for files, avoids file name collisions for 
+      # identical basenames
+      baseuuid <- paste(sample(c(letters[1:6],0:9),30,replace=TRUE),collapse="")
+      fname <- paste0(substr(baseuuid,1,8), "-",
+        substr(baseuuid,9,12), "-", "4",
+        substr(baseuuid,13,15), "-",
+        sample(c("8","9","a","b"),1),
+        substr(baseuuid,16,18), "-",
+        substr(baseuuid,19,30),
+        collapse=""
+      )
+      writeBin(getBinaryURL(url), file.path(assets.path, fname))
     }
     lapply(year.tables, dlname)
     return(assets.path)
@@ -73,18 +85,22 @@ readONSNames <- function() {
   # wrapped into a function because ONS stores many excel 
   # sheets (2 per year)
   wrapXLS <- function(file) {
-
+    year.regex <- "[0-9]{4}"
     # find which sheet we need to look at as well as
     # which gender are we looking at.
     sheet.names <- sheetNames(file)
-    sheet.loc <- grepl("(Boy|Girl)s names", sheet.names)
+    sheet.loc <- grepl("(Boy|Girl)([^ ]*)? names", sheet.names)
+    # Infer year from table of contents sheet
+    contents <- read.xls(file, sheet = 1)
+    year.string <- names(contents)[grepl(year.regex, names(contents))]
+    year <- regmatches(year.string, regexpr(year.regex, year.string))
     if (any(sheet.loc)) {
       # only will happen if ONS changes structure of xls files
       if (sum(sheet.loc) > 1) {
         stop("too many sheets found")
       }
       sheet.number <- which(sheet.loc)
-      year <- basename(sub("^[^0-9]*([0-9]{4}).*$", "\\1", basename(file)))
+
       xls.df <- read.xls(file, sheet = sheet.number, method = "csv",
                          skip = 2, stringsAsFactors = FALSE)
       # sheets contain a consierable number of empty columns.
@@ -92,7 +108,7 @@ readONSNames <- function() {
       xls.df <- xls.df[, good.cols]
       xls.df[, "Sex"] <- ifelse(grepl("Boy", sheet.names[sheet.loc]), 
                                 "M", "F")
-      xls.df[, "Year"] <- year
+      xls.df[, "Year"] <- as.numeric(year)
     } else {
       # may happen if ONS changes structure or download is corrupted
       stop("no full sheet found")
@@ -101,21 +117,21 @@ readONSNames <- function() {
     # cleanup df
     xls.df <- xls.df[, c("Name", "Count", "Sex", "Year")]
     xls.df <- cleanupNC(xls.df)
-    xls.df[, "Year"] <- as.numeric(xls.df[, "Year"])
 
     return(xls.df)
   }
 
-  ons.path <- downloadONS()
-  files <- list.files(ons.path,
-                      full.names = TRUE)
-  
-  alluk.df <- do.call(rbind, lapply(files, wrapXLS))
+  files <- downloadONS()
+
+  alluk.df <- do.call(rbind, lapply(
+    list.files(files, full.names = TRUE),
+    wrapXLS
+  ))
 
   alluk.df <- ddply(alluk.df, "Year", function(x) {
                     cbind(matchSexes(x), Year = x[1, "Year"])
                   })
-  unlink(ons.path, recursive = TRUE)
+  unlink(files, recursive = TRUE)
   closeAllConnections()
   return(alluk.df)
 }
