@@ -8,7 +8,7 @@
 #' @return Data frame with columns for Name, Year, and counts for 
 #'   gender incidence
 #' @keywords ireland
-#' @seealso \code{\link{readONSNames}}, \code{\link{readScotlandNames}}, 
+#' @seealso \code{\link{readONSNames}}, \code{\link{readGRONames}}, 
 #'   \code{\link{readSSANames}}
 #' @export
 #' @importFrom RCurl getBinaryURL

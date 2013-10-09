@@ -11,7 +11,7 @@
 #'   gender incidence
 #' @keywords america
 #' @seealso \code{\link{readONSNames}}, \code{\link{readNISRANames}}, 
-#'   \code{\link{readScotlandNames}}
+#'   \code{\link{readGRONames}}
 #' @export
 
 readSSANames <- function(type) {

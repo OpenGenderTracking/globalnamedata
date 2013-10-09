@@ -90,6 +90,27 @@ mergeSum <- function(dataframes) {
   return(Reduce(f = mergeSumSingle, x = dataframes))
 }
 
+#' Generate uuids for files (which aren'd generated in as tempfiles)
+#'
+#' Basenames for source urls are not unique enough to avoid collisions
+#'
+#' @return A string representing a unique uuid
+
+uuid <- function() {
+  # From http://stackoverflow.com/a/10493590/1188479
+  baseuuid <- paste(sample(c(letters[1:6],0:9),30,replace=TRUE),collapse="")
+  uuid <- paste0(substr(baseuuid,1,8), "-",
+    substr(baseuuid,9,12), "-", "4",
+    substr(baseuuid,13,15), "-",
+    sample(c("8","9","a","b"),1),
+    substr(baseuuid,16,18), "-",
+    substr(baseuuid,19,30),
+    collapse=""
+  )
+  return(uuid)
+}
+
+
 #' Download zipped folder and extract to temp directory
 #'
 #' SSA releases names as text files in a directory. Downloading these files 

@@ -3,13 +3,13 @@
 #' 
 #' The Office of National Statistics provides gender data for names with 
 #' greater than 3 births per year. Full name data is provided between 1996 and 
-#' 2011. The ONS offers historical summary data for 1904-1994 but these are 
+#' 2012. The ONS offers historical summary data for 1904-1994 but these are 
 #' restricted to the most popular names per year and so are not of much analytical
 #' value and not provided here.
 #' 
 #' @name ewnames
 #' @docType data
-#' @format A dataframe with 165457 observations on the following 4 variables,
+#' @format A dataframe with 178811 observations on the following 4 variables,
 #'
 #' \describe{
 #' 
@@ -33,11 +33,11 @@ NULL
 #' 
 #' The Northern Ireland Statistics and Research Administration provides gender 
 #' data for names with greater than 3 births per year. 
-#' Full name data is provided between 1997 and 2011. 
+#' Full name data is provided between 1997 and 2012. 
 #' 
 #' @name ninames
 #' @docType data
-#' @format A dataframe with 12806 observations on the following 4 variables,
+#' @format A dataframe with 13857 observations on the following 4 variables,
 #'
 #' \describe{
 #' 
@@ -60,11 +60,11 @@ NULL
 #' 
 #' Scotland's General Register Office provides gender 
 #' data for names with greater than 3 births per year. 
-#' Full name data is provided for 2009 and 2010. 
+#' Full name data is provided for 2009 to 2012. 
 #'
 #' @name scotnames
 #' @docType data
-#' @format A dataframe with 13605 observations on the following 4 variables,
+#' @format A dataframe with 24414 observations on the following 4 variables,
 #'
 #' \describe{
 #' 
@@ -118,7 +118,7 @@ NULL
 #' 
 #' @name uknames
 #' @docType data
-#' @format A dataframe with 171695 observations on the following 4 variables,
+#' @format A dataframe with 189264 observations on the following 4 variables,
 #'
 #' \describe{
 #' 
@@ -142,7 +142,7 @@ NULL
 #' 
 #' @name ukprocessed
 #' @docType data
-#' @format A dataframe with 30714 observations on the following 7 variables,
+#' @format A dataframe with 34347 observations on the following 7 variables,
 #'
 #' \describe{
 #' 

@@ -11,7 +11,7 @@
 #' @seealso \code{\link{readONSNames}}, \code{\link{readNISRANames}}, 
 #'   \code{\link{readSSANames}}
 #' @export
-readScotlandNames <- function() {
+readGRONames <- function() {
   ## Scotland Dowload
   downloadScotland <- function() {
     dlname <- function(url, year) {

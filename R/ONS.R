@@ -65,17 +65,7 @@ readONSNames <- function() {
     # download function passed to lapply because
     # we have multiple excel files from a single index
     dlname <- function(url) {
-      # Generate UUID for files, avoids file name collisions for 
-      # identical basenames
-      baseuuid <- paste(sample(c(letters[1:6],0:9),30,replace=TRUE),collapse="")
-      fname <- paste0(substr(baseuuid,1,8), "-",
-        substr(baseuuid,9,12), "-", "4",
-        substr(baseuuid,13,15), "-",
-        sample(c("8","9","a","b"),1),
-        substr(baseuuid,16,18), "-",
-        substr(baseuuid,19,30),
-        collapse=""
-      )
+      fname <- uuid()
       writeBin(getBinaryURL(url), file.path(assets.path, fname))
     }
     lapply(year.tables, dlname)
