@@ -3,3 +3,6 @@
 .RData
 babynames.Rproj
 .DS_Store
+man/
+inst/
+data/
