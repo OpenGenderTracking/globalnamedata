@@ -2,7 +2,7 @@
 \name{uknames}
 \alias{uknames}
 \title{Name and Gender Data for the United Kingdom}
-\format{A dataframe with 171695 observations on the following 4 variables,
+\format{A dataframe with 189264 observations on the following 4 variables,
 
 \describe{
 

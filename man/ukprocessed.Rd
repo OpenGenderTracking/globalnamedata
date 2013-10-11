@@ -2,7 +2,7 @@
 \name{ukprocessed}
 \alias{ukprocessed}
 \title{Processed name data for the United Kingdom}
-\format{A dataframe with 30714 observations on the following 7 variables,
+\format{A dataframe with 34347 observations on the following 7 variables,
 
 \describe{
 

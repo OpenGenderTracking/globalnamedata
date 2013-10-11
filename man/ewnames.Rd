@@ -2,7 +2,7 @@
 \name{ewnames}
 \alias{ewnames}
 \title{Name and Gender Data for England and Wales}
-\format{A dataframe with 165457 observations on the following 4 variables,
+\format{A dataframe with 178811 observations on the following 4 variables,
 
 \describe{
 
@@ -21,7 +21,7 @@
 \description{
   The Office of National Statistics provides gender data
   for names with greater than 3 births per year. Full name
-  data is provided between 1996 and 2011. The ONS offers
+  data is provided between 1996 and 2012. The ONS offers
   historical summary data for 1904-1994 but these are
   restricted to the most popular names per year and so are
   not of much analytical value and not provided here.

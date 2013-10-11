@@ -15,8 +15,7 @@
   \code{\link{ninames}}
 }
 \seealso{
-  \code{\link{readONSNames}},
-  \code{\link{readScotlandNames}},
+  \code{\link{readONSNames}}, \code{\link{readGRONames}},
   \code{\link{readSSANames}}
 }
 \keyword{ireland}

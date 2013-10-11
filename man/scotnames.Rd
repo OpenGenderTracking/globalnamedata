@@ -2,7 +2,7 @@
 \name{scotnames}
 \alias{scotnames}
 \title{Name and Gender Data for Scotland}
-\format{A dataframe with 13605 observations on the following 4 variables,
+\format{A dataframe with 24414 observations on the following 4 variables,
 
 \describe{
 
@@ -21,7 +21,7 @@
 \description{
   Scotland's General Register Office provides gender data
   for names with greater than 3 births per year. Full name
-  data is provided for 2009 and 2010.
+  data is provided for 2009 to 2012.
 }
 \references{
   General Register Office, Baby Names Statistical Bulletin

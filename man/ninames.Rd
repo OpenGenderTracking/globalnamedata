@@ -2,7 +2,7 @@
 \name{ninames}
 \alias{ninames}
 \title{Name and Gender Data for Northern Ireland}
-\format{A dataframe with 12806 observations on the following 4 variables,
+\format{A dataframe with 13857 observations on the following 4 variables,
 
 \describe{
 
@@ -22,7 +22,7 @@
   The Northern Ireland Statistics and Research
   Administration provides gender data for names with
   greater than 3 births per year. Full name data is
-  provided between 1997 and 2011.
+  provided between 1997 and 2012.
 }
 \references{
   Northern Ireland Statistics and Research Administration,

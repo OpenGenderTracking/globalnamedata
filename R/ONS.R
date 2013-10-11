@@ -13,7 +13,7 @@
 #'   \code{\link{readSSANames}}
 #' @export
 #' @importFrom RCurl getBinaryURL
-#' @importFrom XML htmlParse xpathSApply xmlAttrs
+
 readONSNames <- function() {
   # if needed, the path to perl can be set as an argument here
   if (length(xlsFormats()) != 2) {
@@ -31,10 +31,8 @@ readONSNames <- function() {
     # somewhat fragile path to individual data pages
     indexGet <- function() {
       # index page for data 
-      
-      index.doc <- htmlParse(file.path(ons.base.url, ons.index))
-      
-      year.pages <- xpathSApply(index.doc, xpath.release, xmlAttrs)
+      year.pages <- docsFromIndex(file.path(ons.base.url, ons.index),
+                                  xpath.release)
       
       year.pages <- paste0(ons.base.url, year.pages)
       # drop summary page for now
@@ -43,15 +41,12 @@ readONSNames <- function() {
     }
     
     tableGet <- function(url, filter = "reference") {
-      tables <- xpathSApply(htmlParse(url), 
-                            table.selector, 
-                            xmlAttrs)
+      tables <- docsFromIndex(url, table.selector)
+
       tables <- tables[grepl(filter, tables)]
       
-      excel.out <- xpathSApply(htmlParse(paste0(ons.base.url, tables)),
-                               xpath.xls,
-                               xmlAttrs)
-      attributes(excel.out) <- NULL
+      excel.out <- docsFromIndex(paste0(ons.base.url, tables), xpath.xls)
+
       return(excel.out)
     }
     

@@ -12,28 +12,23 @@
 #'   \code{\link{readSSANames}}
 #' @export
 #' @importFrom RCurl getBinaryURL
-#' @importFrom XML htmlParse xpathSApply xmlAttrs
+
 readNISRANames <- function() {
   # if needed, the path to perl can be set as an argument here
   if (length(xlsFormats()) != 2) {
     installXLSXsupport()
   }
 
+  bn.path <- "//a[contains(text(), 'Full Baby Names')]"
+  nisra.index <- "http://www.nisra.gov.uk/demography/default.asp28.htm"
   ## Nisra download
   downloadNISRA <- function() {
-    indexGet <- function(index.url) {
-      index.doc <- htmlParse(index.url)
-      # NISRA links to baby names from their index
-      archive <- xpathSApply(index.doc, 
-                             "//a[contains(text(), 'Full Baby Names')]", 
-                             xmlAttrs)
-      return(unname(archive))
-    }
     assets.path <- file.path(tempdir(), "assets", "nisra")
     dir.create(assets.path, recursive = TRUE)
-    nisra.index <- "http://www.nisra.gov.uk/demography/default.asp28.htm"
-    url <- indexGet(nisra.index)
-    writeBin(getBinaryURL(url), file.path(assets.path, "nisra.xls"))
+    
+    remote <- docsFromIndex(nisra.index, bn.path)
+
+    writeBin(getBinaryURL(remote), file.path(assets.path, "nisra.xls"))
     return(assets.path)
   }
 

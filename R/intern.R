@@ -4,6 +4,22 @@
 ###
 #####
 
+#' Return Locations from Parsed Index
+#'
+#' Wrapper for xpathSApply and htmlParse
+#'
+#' @param url A character vector of length 1 specifying the index url
+#' @param xpath A character vector of length 1 specifying the xpath query
+#'
+#' @return A character vector of matched locations
+#' @importFrom XML htmlParse xpathSApply xmlAttrs
+
+docsFromIndex <- function(url, xpath) {
+  index.doc <- htmlParse(url)
+  locations <- xpathSApply(index.doc, xpath, xmlAttrs)
+  return(unname(locations))
+}
+
 # Condense names to single row. Accepts a single argument, x with the form
 #        Name Sex Count Year
 # 1      Mary   F  7065 1880
@@ -118,14 +134,15 @@ uuid <- function() {
 #' for details
 #'
 #' @param url string Location for zip file
+#' @param pattern string File name prefix
 #' @return A string containing the path to the directory
 
-zipDir <- function(url) {
+zipDir <- function(url, pattern = "ssa") {
   # Specify temp directory
   # some environments may pollute the temp directory, so create a new folder
   assets.path <- file.path(tempdir(), "zipout")
   # # Unweildy to stream from url to directory while unzipping
-  temp <- tempfile(pattern = "ssa", fileext = ".zip")
+  temp <- tempfile(pattern = pattern, fileext = ".zip")
   # # download and unzip (both invoked for side effects)
   download.file(url, temp)
   dir.create(assets.path, recursive = TRUE)

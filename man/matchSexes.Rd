@@ -7,6 +7,9 @@
 \arguments{
   \item{x}{A data frames with columns for Name, Sex, Count
   and Year}
+
+  \item{by}{string denoting common value for data frame
+  (e.g. year or state)}
 }
 \value{
   A single data frame with columns for Name, F, M, and Year
