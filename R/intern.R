@@ -44,8 +44,11 @@ matchSexes <- function(x) {
   # think of them as the two steps in constructing a
   # pivot table
   
-  x.out <- dcast(x[, c("Name", "Sex", "Count")], 
-                 Name ~ Sex, sum, value.var = "Count")
+  x.out <- dcast(
+    x[, c("Name", "Sex", "Count")], 
+    Name ~ Sex, sum,
+    value.var = "Count"
+  )
   ## x.out structure
   #     Name  F   M
   # 1  Aaron  0 102
@@ -63,8 +66,10 @@ matchSexes <- function(x) {
 
 cleanupNC <- function(data) {
   capOne <- function(x) {
-    paste0(toupper(substring(x, 1, 1)), 
-           tolower(substring(x, 2)))
+    paste0(
+      toupper(substring(x, 1, 1)), 
+      tolower(substring(x, 2))
+    )
   }
   ## Count
   data[, "Count"] <- gsub(",|\\.+|;|\\s+", "", data[, "Count"])
@@ -75,9 +80,11 @@ cleanupNC <- function(data) {
   ## Name
   # NISRA and Scotland return some multi-byte characters
   if (any(is.na(nchar(data[, "Name"], allowNA = TRUE)))) {
-    data[, "Name"] <- iconv(data[, "Name"],
-                            from = "latin1",
-                            to = "UTF-8")
+    data[, "Name"] <- iconv(
+      data[, "Name"],
+      from = "latin1",
+      to = "UTF-8"
+    )
   }
   data[, "Name"] <- gsub("^\\s+|\\s+$", "", data[, "Name"])
   data <- data[grepl("[A-Za-z]+", data[, "Name"]), ]
@@ -98,9 +105,12 @@ cleanupNC <- function(data) {
 #' @return A single data frame with columns for Name, F, M, and Year
 mergeSum <- function(dataframes) {
   mergeSumSingle <- function(dfx, dfy) {
-    m.out <- ddply(merge(dfx, dfy, all = TRUE), 
-                   c("Name", "Year"), 
-                   function(x) c(F = sum(x[, "F"]), M = sum(x[, "M"])))
+    m.out <- ddply(
+      merge(dfx, dfy, all = TRUE), 
+      c("Name", "Year"), 
+        function(x) c(F = sum(x[, "F"]), M = sum(x[, "M"])
+      )
+    )
     return(m.out)
   }
   return(Reduce(f = mergeSumSingle, x = dataframes))
@@ -140,13 +150,28 @@ uuid <- function() {
 zipDir <- function(url, pattern = "ssa") {
   # Specify temp directory
   # some environments may pollute the temp directory, so create a new folder
-  assets.path <- file.path(tempdir(), "zipout")
+  assets.path <- file.path(
+    tempdir(),
+    "zipout"
+  )
   # # Unweildy to stream from url to directory while unzipping
-  temp <- tempfile(pattern = pattern, fileext = ".zip")
+  temp <- tempfile(
+    pattern = pattern,
+    fileext = ".zip"
+  )
   # # download and unzip (both invoked for side effects)
-  download.file(url, temp)
-  dir.create(assets.path, recursive = TRUE)
-  unzip(temp, exdir = assets.path)
+  download.file(
+    url,
+    temp
+  )
+  dir.create(
+    assets.path,
+    recursive = TRUE
+  )
+  unzip(
+    temp,
+    exdir = assets.path
+  )
   # Cleanup temp file and remove explanatory pdf from temp directory
   unlink(c(temp, file.path(assets.path, "*.pdf")))
   return(assets.path)

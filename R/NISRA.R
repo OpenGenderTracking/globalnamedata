@@ -79,10 +79,12 @@ readNISRANames <- function() {
   # is embedded in the first sheet and building an index from
   # that would be just as brittle and twice as slow
 
-  boys <- read.xls(nisra, sheet = 2, 
-                   stringsAsFactors = FALSE)
-  girls <- read.xls(nisra, sheet = 3, 
-                    stringsAsFactors = FALSE)
+  boys <- read.xls(
+    nisra, sheet = 2, stringsAsFactors = FALSE
+  )
+  girls <- read.xls(
+    nisra, sheet = 3, stringsAsFactors = FALSE
+  )
 
 	girls.df <- nisraSplit(girls)
 	girls.df[, "Sex"] <- "F"
@@ -90,10 +92,13 @@ readNISRANames <- function() {
 	boys.df <- nisraSplit(boys)
 	boys.df[, "Sex"] <- "M"
 
-	df.out <- ddply(rbind(girls.df, boys.df), 
-                  "Year", function(x) {
-                    cbind(matchSexes(x), Year = x[1, "Year"])
-                  })
+	df.out <- ddply(
+    rbind(girls.df, boys.df), 
+    "Year",
+    function(x) {
+      cbind(matchSexes(x), Year = x[1, "Year"])
+    }
+  )
 
   unlink(nisra.path, recursive = TRUE)
   closeAllConnections()
