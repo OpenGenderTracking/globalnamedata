@@ -25,9 +25,9 @@
 #' @importFrom binom binom.confint
 nameBinom <- function(data, method = "ac", 
                       threshold = 0.9, ...) {
+  base.cols <- c("Name", "years.appearing","count.female", "count.male")
   # drop columns from other analyses
-  input.cols <- !names(data) %in% c("prob.gender", "upper", "lower", "est.male")
-  data <- data[, input.cols]
+  data <- data[, names(data) %in% base.cols]
 
   pred <- with(data, binom.confint(count.male, count.male + count.female,
                                    method = method, ...))
@@ -45,13 +45,15 @@ nameBinom <- function(data, method = "ac",
   }
 
   gender.prediction <- procThreshold(pred[, "mean"], threshold)
+  gender.observed <- with(data, (count.male / (count.male + count.female)))
   # Because the ratios are essentially symmetric we can assign
   # confidence intervals for both in one pass
   gender.upper <- with(pred, ifelse(mean > 0.5, upper, 1 - lower))
   gender.lower <- with(pred, ifelse(mean > 0.5, lower, 1 - upper))
 
   data.pred <- data.frame(prob.gender = gender.prediction,
-                          est.male = pred[, "mean"],
+                          obs.male = pred[, "mean"],
+                          est.male = gender.observed,
                           upper = gender.upper,
                           lower = gender.lower)
   return(cbind(data, data.pred))

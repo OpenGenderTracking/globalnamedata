@@ -48,6 +48,28 @@ byNameCount <- function(data) {
   return(data.out)
 }
 
+#' Recursively merge name datasets by summing comparable name counts
+#'
+#' Function to merge name data from difference countryies, matching by name
+#' and summing counts.
+#'
+#' @param dataframes A list of data frames with columns for Name, F, M, and Year
+#' @return A single data frame with columns for Name, F, M, and Year
+#' @export
+
+mergeSum <- function(dataframes) {
+  mergeSumSingle <- function(dfx, dfy) {
+    m.out <- ddply(
+      merge(dfx, dfy, all = TRUE), 
+      c("Name", "Year"), 
+        function(x) c(F = sum(x[, "F"]), M = sum(x[, "M"])
+      )
+    )
+    return(m.out)
+  }
+  return(Reduce(f = mergeSumSingle, x = dataframes))
+}
+
 #' Compute gender balance
 #'
 #' Determine the per-year gender breakdown for names anchored to 
