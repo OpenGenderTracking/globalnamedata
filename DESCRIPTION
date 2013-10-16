@@ -5,7 +5,7 @@ Authors@R: c(
     email = "achyland@bocoup.com", role = c("aut", "cre")),
     person("Irene", "Ros", role = "ctb"))
 Author: Adam Hyland with contributions from I. Ros
-Version: 0.2
+Version: 0.3
 License: MIT
 Title: Tools for processing name/gender data
 Description: namedata provides a set of tools for gathering name/gender
