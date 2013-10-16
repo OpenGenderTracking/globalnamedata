@@ -1,6 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
+.Rbuildignore
 babynames.Rproj
 .DS_Store
 man/
