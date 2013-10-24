@@ -52,8 +52,8 @@ nameBinom <- function(data, method = "ac",
   gender.lower <- with(pred, ifelse(mean > 0.5, lower, 1 - upper))
 
   data.pred <- data.frame(prob.gender = gender.prediction,
-                          obs.male = pred[, "mean"],
-                          est.male = gender.observed,
+                          obs.male = gender.observed,
+                          est.male = pred[, "mean"],
                           upper = gender.upper,
                           lower = gender.lower)
   return(cbind(data, data.pred))
